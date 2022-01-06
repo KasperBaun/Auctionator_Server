@@ -58,48 +58,12 @@ public class Server {
                     System.out.println("Telling " + who + " to go for room " + roomID + " at " + roomURI + "...");
                     lobby.put("roomURI", who, roomID, roomURI);
                 }
-
-
             }
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 }
 
-class roomHandler implements Runnable {
-
-    private Space chat;
-    private String roomID;
-    private String spaceID;
-
-    public roomHandler(String roomID, String spaceID, String uri, SpaceRepository repository) {
-
-        this.roomID = roomID;
-        this.spaceID = spaceID;
-
-        // Create a local space for the chatroom
-        chat = new SequentialSpace();
-
-        // Add the space to the repository
-        repository.add(this.spaceID, chat);
-
-    }
-
-    @Override
-    public void run() {
-        try {
-
-            // Keep reading chat messages and printing them
-            while (true) {
-                Object[] message = chat.get(new FormalField(String.class), new FormalField(String.class));
-                System.out.println("ROOM " + roomID + " | " + message[0] + ":" + message[1]);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
 
-    }
-}
