@@ -78,5 +78,5 @@
        <url>https://api.bintray.com/maven/pspaces/jspace-repo/jspace/;publish=1</url>
     </repository>
  </distributionManagement>
- 
+
 </project>
