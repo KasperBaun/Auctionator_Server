@@ -1,40 +1,64 @@
-import org.jspace.QueueSpace;
+
+import org.jspace.FormalField;
+import org.jspace.SequentialSpace;
 import org.jspace.Space;
+import org.jspace.SpaceRepository;
 
 public class Auctioneer implements Runnable{
-    private String auctionName;
-    private String auctionDescription;
-    private Integer auctionStartPrice;
-    private String endDate;
-    private String endTime;
-    private Space lobby;
-    private Space bids;
-    private Integer highestBid;
-    private String highestBidUser;
+    private Space           auction;
+    private String          auctionID;
+    private SpaceRepository repository;
+    private String          auctionOwner;
+    private String          auctionName;
+    private Integer         auctionStartPrice;
+    private String          endDate;
+    private String          endTime;
+    private String          auctionDescription;
+    private Integer         highestBid;
+    private String          highestBidUser;
 
-    public Auctioneer(String auctionName,
-                      String auctionDescription,
-                      Integer auctionStartPrice,
-                      String endDate,
-                      String endTime,
-                      Space auctionLobby
+    public Auctioneer(
+            String auctionID,
+            SpaceRepository repository,
+            String auctionOwner,
+            String auctionName,
+            Integer auctionStartPrice,
+            String endDate,
+            String endTime,
+            String auctionDescription
     ){
+        this.auctionID = auctionID;
+        this.repository = repository;
+        this.auctionOwner = auctionOwner;
         this.auctionName = auctionName;
-        this.auctionDescription = auctionDescription;
         this.auctionStartPrice = auctionStartPrice;
         this.endDate = endDate;
         this.endTime = endTime;
-        this.lobby = auctionLobby;
+        this.auctionDescription = auctionDescription;
 
-        bids = new QueueSpace();
+        auction = new SequentialSpace();
         highestBid = 0;
         highestBidUser = "null";
+        repository.add("auction/"+this.auctionID, auction);
     }
 
     @Override
     public void run() {
         // if current time = endTime -> endAuction
+        try {
+
+            // Keep reading chat messages and printing them
+            while (true) {
+                Object[] newBid = auction.get(new FormalField(Integer.class), new FormalField(String.class));
+                System.out.println("Received bid from: " + newBid[1] + " @ " + newBid[0] + " DKK" );
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
     }
+
 
     private void startAuction(){
 
