@@ -9,8 +9,8 @@ public class Main {
         // Keep serving requests to enter or create auctions
         while (true) {
 
-            server.listenForRequestToJoinAuction();
             server.listenForRequestToCreateAuction();
+            server.listenForRequestToJoinAuction();
 
         }
     }

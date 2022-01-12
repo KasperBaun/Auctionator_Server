@@ -5,9 +5,10 @@ import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
 public class Auctioneer implements Runnable{
-    private Space           auction;
+    private Space           auctionLobby;
     private String          auctionID;
     private SpaceRepository repository;
+    private String          auctionLobbyURI;
     private String          auctionOwner;
     private String          auctionName;
     private Integer         auctionStartPrice;
@@ -20,6 +21,7 @@ public class Auctioneer implements Runnable{
     public Auctioneer(
             String auctionID,
             SpaceRepository repository,
+            String auctionLobbyURI,
             String auctionOwner,
             String auctionName,
             Integer auctionStartPrice,
@@ -29,6 +31,7 @@ public class Auctioneer implements Runnable{
     ){
         this.auctionID = auctionID;
         this.repository = repository;
+        this.auctionLobbyURI = auctionLobbyURI;
         this.auctionOwner = auctionOwner;
         this.auctionName = auctionName;
         this.auctionStartPrice = auctionStartPrice;
@@ -36,27 +39,16 @@ public class Auctioneer implements Runnable{
         this.endTime = endTime;
         this.auctionDescription = auctionDescription;
 
-        auction = new SequentialSpace();
+        auctionLobby = new SequentialSpace();
         highestBid = 0;
         highestBidUser = "null";
-        repository.add("auction/"+this.auctionID, auction);
+        repository.add(auctionLobbyURI, auctionLobby);
     }
 
     @Override
     public void run() {
         // if current time = endTime -> endAuction
-        try {
-
-            // Keep reading chat messages and printing them
-            while (true) {
-                Object[] newBid = auction.get(new FormalField(Integer.class), new FormalField(String.class));
-                System.out.println("Received bid from: " + newBid[1] + " @ " + newBid[0] + " DKK" );
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
+        listenForBids();
     }
 
 
@@ -69,5 +61,18 @@ public class Auctioneer implements Runnable{
         // find ud af hvem der har vundet
         // annoncér vinder i "lobby"
         // lukke auktionen (fjerne spaces osv) - brugeren skal have besked om at de har vundet, pris, forsendelse/afhentning bla bla
+    }
+
+    private void listenForBids(){
+        try {
+
+            // Keep reading bids and printing them
+            while (true) {
+                Object[] newBid = auctionLobby.get(new FormalField(Integer.class), new FormalField(String.class));
+                System.out.println("Received bid from: " + newBid[1] + " @ " + newBid[0] + " DKK" );
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,11 +1,11 @@
 import org.jspace.*;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Server {
     public SpaceRepository repository;
     public SequentialSpace auctionatorLobby;
+    public SequentialSpace auctions;
     public String IpV4;
     public String lobbyURI;
     public Integer auctionCount;
@@ -13,26 +13,25 @@ public class Server {
     // Server constructor takes repository as parameter to work on
     public Server(SpaceRepository repository) {
 
+        auctionCount = 0;
         this.repository = repository;
         SequentialSpace auctionatorLobby = new SequentialSpace();
         repository.add("lobby", auctionatorLobby);
         this.auctionatorLobby = auctionatorLobby;
 
         // Set the URI of the lobby space from LocalHost of machine
-        // TODO : Maybe it is required to change this code when server is to be setup on the interwebz
-        this.lobbyURI = getLocalMachineIPv4() + "/lobby";
+        // TODO : It is required to change this code if the server is to be setup on the interwebz
+        //this.lobbyURI = getLocalMachineIPv4() + "/lobby";
+            this.lobbyURI = "tcp://127.0.0.1:9001/lobby";
 
         // Open a gate
         repository.addGate(lobbyURI + "/?keep");
         System.out.println("Opening repository gate at " + lobbyURI + "...");
 
-        /*
-        // This space holds room identifiers to port numbers (keep track of open auctions and their addresses (ports))
+        // Open new space for mapping auctionId -> auctionURI
         SequentialSpace auctions = new SequentialSpace();
         this.auctions = auctions;
-        */
 
-        auctionCount = 0;
     }
 
    public void listenForRequestToJoinAuction() throws InterruptedException {
@@ -45,9 +44,9 @@ public class Server {
         System.out.println(user + " requesting to enter " + auctionId + "...");
 
         // If auction exists prepare response with the corresponding URI
-        Object[] the_auction = auctionatorLobby.queryp(new ActualField(auctionId), new FormalField(Integer.class));
+        Object[] the_auction = auctions.queryp(new ActualField(auctionId), new FormalField(String.class));
         if (the_auction != null) {
-            auctionURI = lobbyURI + "/auction/" + the_auction[1] + "?keep";
+            auctionURI = the_auction[1] + "?keep";
             // Sending response back to the chat client
             System.out.println("Telling " + user + " to go for auction " + auctionId + " at " + auctionURI + "...");
             auctionatorLobby.put("roomURI", user, auctionId, auctionURI);
@@ -70,8 +69,7 @@ public class Server {
                 new FormalField(Integer.class), // Start price
                 new FormalField(String.class),  // End-date
                 new FormalField(String.class),  // End-time
-                new FormalField(String.class),  // Description
-                new FormalField(String.class)   //
+                new FormalField(String.class)   // Description
         );
 
         // Setup new thread with Auctioneer for handling the auction
@@ -82,6 +80,7 @@ public class Server {
         new Thread(new Auctioneer(
                 auctionCount.toString(),        // AuctionID
                 repository,                     // SpaceRepository
+                auctionURI,                     // The URI to the newly created space for the auction
                 username,                       // Username
                 createRequest[2].toString(),    // Item name
                 (Integer)createRequest[3],      // Start-price
@@ -99,6 +98,8 @@ public class Server {
         auctionatorLobby.put("auctionURI", username, auctionCount, auctionURI);
         System.out.println(username + " requesting to enter " + auctionURI + "...");
     }
+
+
     public String getLocalMachineIPv4(){
         String localMachineIpV4;
         String port = "9001";

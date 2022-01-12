@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jspace (2)">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jspace.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
