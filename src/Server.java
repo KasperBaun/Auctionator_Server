@@ -1,8 +1,4 @@
 import org.jspace.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,36 +16,24 @@ public class Server {
     public Server(SpaceRepository repository) {
 
         auctionCount = 0;
-        SequentialSpace lobby = new SequentialSpace();
-        repository.add("lobby", lobby);
-        this.auctionatorLobby = lobby;
+        SequentialSpace auctionatorLobby = new SequentialSpace();
+        repository.add("lobby", auctionatorLobby);
+        this.auctionatorLobby = auctionatorLobby;
 
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-
-        // Set the URI of the lobby space
-
-        // Default value
+        // Set the URI of the lobby space from LocalHost of machine
+        // TODO : It is required to change this code if the server is to be setup on the interwebz
+        //this.lobbyURI = getLocalMachineIPv4() + "/lobby";
         String uri = "tcp://127.0.0.1:9001/?keep";
-
-
-        // Open a gate
         URI myUri = new URI(uri);
         String gateUri = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
-        System.out.println("Opening repository gate at " + gateUri + "...");
+
+        // Open a gate
         repository.addGate(gateUri);
-        this.lobbyURI = gateUri;
+        System.out.println("Opening repository gate at " + gateUri + "...");
 
         // Open new space for mapping auctionId -> auctionURI
         SequentialSpace auctions = new SequentialSpace();
         this.auctions = auctions;
-
-    }
-
-    public void readMessage() throws InterruptedException {
-
-        // Read request to enter auction
-        Object[] request = this.auctionatorLobby.get(new FormalField(String.class), new FormalField(String.class));
-        System.out.println(request[0].toString() + request[1].toString());
 
     }
 
@@ -81,20 +65,26 @@ public class Server {
     public void listenForRequestToCreateAuction () throws InterruptedException {
 
         // Read request to create auction
-        Object[] createRequest = this.auctionatorLobby.get(
-                new ActualField("create"),
-                new FormalField(String.class),  // Username
-                new FormalField(String.class),  // Item name
-                new FormalField(String.class), // Start price
-                //new FormalField(String.class),  // End-date
-                new FormalField(String.class),  // End-time
-                new FormalField(String.class)   // Description
-        );
+//        Object[] createRequest = auctionatorLobby.get(
+//                new FormalField((String.class)),// create
+//                //new ActualField("create"),
+//                new FormalField(String.class),  // Username
+//                new FormalField(String.class),  // Item name
+//                new FormalField(Integer.class), // Start price
+//                new FormalField(String.class),  // End-date
+//                new FormalField(String.class),  // End-time
+//                new FormalField(String.class)   // Description
+//        );
 
-        /*
+       Object[] createRequest = auctionatorLobby.get(
+               new FormalField(String.class),  // Item name
+               new FormalField(Integer.class) // Start price
+       );
+       System.out.println("Request created");
+
         if (createRequest != null){
-            System.out.println("New createAuction request from: " + createRequest[1]);
-        }*/
+            System.out.println("User has entered a createRequest: " + createRequest[1]);
+        }
 
         // Setup new thread with Auctioneer for handling the auction
         String auctionURI;
@@ -107,9 +97,10 @@ public class Server {
                 auctionURI,                     // The URI to the newly created space for the auction
                 username,                       // Username
                 createRequest[2].toString(),    // Item name
-                createRequest[3].toString(),     // Start-price
-                createRequest[4].toString(),    // End-time
-                createRequest[5].toString()     // Description
+                (Integer)createRequest[3],      // Start-price
+                createRequest[4].toString(),    // End-date
+                createRequest[5].toString(),    // End-time
+                createRequest[6].toString()     // Description
         )).start();
         this.auctionCount++;
 
@@ -118,8 +109,8 @@ public class Server {
 
         // Sending response back to the chat client
         System.out.println("Telling " + username + " to go for auction " + auctionCount + " at " + auctionURI + "...");
-        auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
-        //System.out.println(username + " requesting to enter " + auctionURI + "...");
+        auctionatorLobby.put("auctionURI", username, auctionCount, auctionURI);
+        System.out.println(username + " requesting to enter " + auctionURI + "...");
     }
 
    public String getLocalMachineIPv4(){

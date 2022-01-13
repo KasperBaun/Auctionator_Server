@@ -11,7 +11,8 @@ public class Auctioneer implements Runnable{
     private String          auctionLobbyURI;
     private String          auctionOwner;
     private String          auctionName;
-    private String         auctionStartPrice;
+    private Integer         auctionStartPrice;
+    private String          endDate;
     private String          endTime;
     private String          auctionDescription;
     private Integer         highestBid;
@@ -23,7 +24,8 @@ public class Auctioneer implements Runnable{
             String auctionLobbyURI,
             String auctionOwner,
             String auctionName,
-            String auctionStartPrice,
+            Integer auctionStartPrice,
+            String endDate,
             String endTime,
             String auctionDescription
     ){
@@ -33,6 +35,7 @@ public class Auctioneer implements Runnable{
         this.auctionOwner = auctionOwner;
         this.auctionName = auctionName;
         this.auctionStartPrice = auctionStartPrice;
+        this.endDate = endDate;
         this.endTime = endTime;
         this.auctionDescription = auctionDescription;
 

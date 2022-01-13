@@ -1,19 +1,15 @@
+import org.jspace.SpaceRepository;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class Main {
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) throws URISyntaxException {
 
         Server server = new Server();
 
-        Thread t0 = new Thread(new Main().new RunnableMessageListener(server));
-        t0.start();
-
         Thread t1 = new Thread(new Main().new RunnableServerListener(server));
-        t1.start();
-
         Thread t2 = new Thread(new Main().new RunnableServerCreator(server));
+        t1.start();
         t2.start();
 
     }
@@ -49,25 +45,6 @@ public class Main {
             while (true) {
                 try {
                     server.listenForRequestToCreateAuction();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private class RunnableMessageListener implements Runnable {
-
-        Server server;
-        public RunnableMessageListener(Server server) {
-            this.server = server;
-        }
-
-        public void run() {
-
-            while (true) {
-                try {
-                    server.readMessage();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
