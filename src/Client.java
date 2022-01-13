@@ -24,9 +24,10 @@ public class Client {
             RemoteSpace lobby = new RemoteSpace(uri);
 
             // Read user name from the console
-            System.out.print("Enter your username: ");
+            // System.out.print("Enter your username: ");
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-            String username = input.readLine();
+            //String username = input.readLine();
+            String username = "User";
 
             /*
             // Read chatroom from the console
@@ -42,21 +43,35 @@ public class Client {
             // Send request to enter chatroom
             lobby.put("enter",username,auctionNumber);
              */
+//
+//            lobby.put(
+//                    new ActualField("create"),
+//                    new ActualField(username),          // Username
+//                    new ActualField("Stol"),    // Item name
+//                    new ActualField(50),        // Start price
+//                    new ActualField("14-01-2022"),  // End-date
+//                    new ActualField("20:00"),  // End-time
+//                    new ActualField("Fra Georg Jensen - små pletter ingen skrammer")  // Description
+//            );
 
             lobby.put(
-                    new ActualField("create"),
-                    new ActualField(username),  // Username
-                    new ActualField("Stol"),  // Item name
-                    new ActualField(50), // Start price
-                    new ActualField("14-01-2022"),  // End-date
-                    new ActualField("20:00"),  // End-time
-                    new ActualField("Fra Georg Jensen - små pletter ingen skrammer")  // Description
+                new ActualField("Test"),
+                new ActualField(0)
             );
 
-            // Get response with chatroom URI
-            Object[] response = lobby.get(new ActualField("auctionURI"), new ActualField(username), new ActualField(50), new FormalField(String.class));
+/*            Object[] response = lobby.get(
+                    new ActualField("auctionURI"),
+                    new ActualField(username),
+                    new FormalField(Integer.class),
+                    new FormalField(String.class)
+            );*/
+            Object[] response = lobby.get(
+                    new FormalField(String.class),
+                    new FormalField(Integer.class)
+            );
+
             String auctionSpace_uri = (String) response[3];
-            System.out.println("Connecting to auction #" + 50);
+            System.out.println("Connecting to auction #"+ auctionSpace_uri);
             RemoteSpace auctionroom_space = new RemoteSpace(auctionSpace_uri);
 
             // Keep sending whatever the user types
