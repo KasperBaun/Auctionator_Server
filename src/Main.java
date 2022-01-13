@@ -3,17 +3,52 @@ import org.jspace.SpaceRepository;
 import java.net.URISyntaxException;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws URISyntaxException {
 
-        SpaceRepository repository = new SpaceRepository();
-        Server server = new Server(repository);
+        Server server = new Server();
 
-        // Keep serving requests to enter or create auctions
-        while (true) {
+        Thread t1 = new Thread(new Main().new RunnableServerListener(server));
+        Thread t2 = new Thread(new Main().new RunnableServerCreator(server));
+        t1.start();
+        t2.start();
 
-            server.listenForRequestToCreateAuction();
-            server.listenForRequestToJoinAuction();
+    }
 
+    private class RunnableServerListener implements Runnable {
+
+        Server server;
+        public RunnableServerListener(Server server) {
+            this.server = server;
+        }
+
+        public void run() {
+
+            while (true) {
+                try {
+                    server.listenForRequestToJoinAuction();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class RunnableServerCreator implements Runnable {
+
+        Server server;
+        public RunnableServerCreator(Server server) {
+            this.server = server;
+        }
+
+        public void run() {
+
+            while (true) {
+                try {
+                    server.listenForRequestToCreateAuction();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
