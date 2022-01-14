@@ -17,21 +17,21 @@ public class Server {
     public Integer auctionCount;
 
     // Constructor
-    public Server() throws URISyntaxException, IOException {
+    public Server() throws URISyntaxException {
+
+        auctionCount = 0;
         SpaceRepository repository = new SpaceRepository();
         this.repository = repository;
-        auctionCount = 0;
+
         SequentialSpace lobby = new SequentialSpace();
         repository.add("lobby", lobby);
         this.auctionatorLobby = lobby;
 
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        //BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
         // Set the URI of the lobby space
-
         // Default value
         String uri = "tcp://127.0.0.1:9001/?keep";
-
 
         // Open a gate
         URI myUri = new URI(uri);
@@ -39,10 +39,6 @@ public class Server {
         System.out.println("Opening repository gate at " + gateUri + "...");
         repository.addGate(gateUri);
         this.lobbyURI = gateUri;
-
-        // Open new space for mapping auctionId -> auctionURI
-        this.auctions = new SequentialSpace();
-
     }
 
     public void readMessage() throws InterruptedException {
@@ -73,14 +69,14 @@ public class Server {
         // If the auction does not exist
         else {
             // Sending response back to the chat client with URI = null
-            System.out.println("Telling " + user + " the requested auction does not exist");
+            System.out.println("Telling " + user + " the requested auction " + auctionId + " does not exist");
             auctionatorLobby.put("roomURI", user, 0, "null");
         }
     }
 
     public void listenForRequestToCreateAuction () throws InterruptedException {
         // Read request to create auction
-        Object[] createRequest = this.auctionatorLobby.get(
+        Object[] createRequest = auctionatorLobby.get(
                 new ActualField("create"),
                 new FormalField(String.class),  // Username
                 new FormalField(String.class),  // Item name
@@ -90,14 +86,11 @@ public class Server {
                 new FormalField(String.class)   // Description
         );
 
-        /*
-        if (createRequest != null){
-            System.out.println("New createAuction request from: " + createRequest[1]);
-        }*/
-
         // Setup new thread with Auctioneer for handling the auction
         String auctionURI;
         String username = createRequest[1].toString();
+        String auctionName = createRequest[2].toString();
+        String endTime = createRequest[5].toString();
         auctionURI = lobbyURI + "/auction/" + auctionCount;
 
         new Thread(new Auctioneer(
@@ -105,20 +98,24 @@ public class Server {
                 repository,                     // SpaceRepository
                 auctionURI,                     // The URI to the newly created space for the auction
                 username,                       // Username
-                createRequest[2].toString(),    // Item name
-                createRequest[3].toString(),     // Start-price
+                auctionName,                    // Item name
+                createRequest[3].toString(),    // Start-price
                 createRequest[4].toString(),    // End-time
-                createRequest[5].toString()     // Description
+                endTime                         // Description
         )).start();
-        this.auctionCount++;
 
         System.out.println("Creating auction " + auctionCount + " for " + username + " ...");
         System.out.println("Setting up auction space " + auctionURI + "...");
 
-        // Sending response back to the chat client
+        /* Sending response back to the chat client */
         System.out.println("Telling " + username + " to go for auction " + auctionCount + " at " + auctionURI + "...");
+        // Tuple for user requesting to create auction
         auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
-        //System.out.println(username + " requesting to enter " + auctionURI + "...");
+
+        // Tuple for other users wishing to join
+        auctionatorLobby.put("auction"+auctionCount.toString(),auctionName,endTime, auctionURI);
+        // Increment auctionCount for next create
+        this.auctionCount++;
     }
 
     public String getLocalMachineIPv4(){
@@ -134,8 +131,6 @@ public class Server {
         this.IpV4 = localMachineIpV4;
         return localMachineIpV4;
     }
-
-
 }
 
 

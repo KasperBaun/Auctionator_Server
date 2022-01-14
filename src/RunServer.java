@@ -2,18 +2,18 @@
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class Main {
-    public static void main(String[] args) throws URISyntaxException, IOException {
+public class RunServer {
+    public static void main(String[] args) throws URISyntaxException {
 
         Server server = new Server();
 
-        Thread t0 = new Thread(new Main().new RunnableMessageListener(server));
+        Thread t0 = new Thread(new RunServer().new RunnableMessageListener(server));
         t0.start();
 
-        Thread t1 = new Thread(new Main().new RunnableServerListener(server));
+        Thread t1 = new Thread(new RunServer().new RunnableServerListener(server));
         t1.start();
 
-        Thread t2 = new Thread(new Main().new RunnableServerCreator(server));
+        Thread t2 = new Thread(new RunServer().new RunnableServerCreator(server));
         t2.start();
 
     }

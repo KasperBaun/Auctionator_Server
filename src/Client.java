@@ -6,91 +6,103 @@ import org.jspace.RemoteSpace;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
-public class Client {
-
-    public static void main(String[] args) {
-
-        try {
-
-            // Set the URI of the loby of the chat server
-            //String uri = "tcp://"+ InetAddress.getLocalHost().getHostAddress()+"/lobby?keep";
-            String uri = "tcp://127.0.0.1:9001/lobby?keep";
-
-            // Connect to the remote lobby
-            System.out.println("Connecting to lobby " + uri + "...");
-            RemoteSpace lobby = new RemoteSpace(uri);
-
-            // Read user name from the console
-            // System.out.print("Enter your username: ");
-            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-            //String username = input.readLine();
-            String username = "User";
-
-            /*
-            // Read chatroom from the console
-            System.out.print("Select an auction: (E.g.: 10)");
-            System.out.print("Auction #10 - Arne Jacobsen Stol");
-            System.out.print("Description: Sort, brugt - god stand - tidligere ejet af Søborg");
-            System.out.print("Current highest bid: 500");
+public class Client  {
 
 
+    public RemoteSpace connectToServer(String uri) throws IOException {
 
-            String auctionNumber = input.readLine();
+        //String uri = "tcp://"+ InetAddress.getLocalHost().getHostAddress()+"/lobby?keep";
+        String URI = uri;
 
-            // Send request to enter chatroom
-            lobby.put("enter",username,auctionNumber);
-             */
-//
-//            lobby.put(
-//                    new ActualField("create"),
-//                    new ActualField(username),          // Username
-//                    new ActualField("Stol"),    // Item name
-//                    new ActualField(50),        // Start price
-//                    new ActualField("14-01-2022"),  // End-date
-//                    new ActualField("20:00"),  // End-time
-//                    new ActualField("Fra Georg Jensen - små pletter ingen skrammer")  // Description
-//            );
+        // Connect to the remote lobby
+        System.out.println("Connecting to lobby " + uri + "...");
+        RemoteSpace space = new RemoteSpace(uri);
+    return space;
 
-            lobby.put(
-                new ActualField("Test"),
-                new ActualField(0)
+    }
+
+    public void printCommands(){
+        System.out.println("\t ###################### \n");
+        System.out.println("\t Welcome to Auctionator \n");
+        System.out.println("\t Please type a command: \n");
+        System.out.println("\t 1: List Auctions \n");
+        System.out.println("\t 2: Create Auction \n");
+        System.out.println("\t exit: Close Auctionator \n");
+        System.out.println("\t ###################### \n");
+    }
+
+    public void listAuctions(RemoteSpace space) throws InterruptedException {
+        List<Object[]> auctions = space.queryAll(
+                new ActualField("auction"),
+                new FormalField(String.class),
+                new FormalField(String.class),
+                new FormalField(String.class)
+        );
+
+        for (Object[] auction: auctions) {
+            System.out.println(
+                    "\t ###############################################\n"  +
+                    "\t # Auction number: " + auction[1].toString() + "\n"  +
+                    "\t # Item name     : " + auction[2].toString() + "\n"  +
+                    "\t # Ends in       : " + auction[3].toString() + "\n"  +
+                    "\t ###############################################\n\n"
             );
+        }
 
-/*            Object[] response = lobby.get(
-                    new ActualField("auctionURI"),
-                    new ActualField(username),
-                    new FormalField(Integer.class),
-                    new FormalField(String.class)
-            );*/
-            Object[] response = lobby.get(
-                    new FormalField(String.class),
-                    new FormalField(Integer.class)
-            );
+        //System.out.println("\t To join an auction type: enter <auctionID> - example: 'enter 34'");
+        System.out.println("\t To join an auction type: join");
 
-            String auctionSpace_uri = (String) response[3];
-            System.out.println("Connecting to auction #"+ auctionSpace_uri);
-            RemoteSpace auctionroom_space = new RemoteSpace(auctionSpace_uri);
+    }
 
-            // Keep sending whatever the user types
-            System.out.println("Start bidding... (Increments of minimum 10 above highest bid)");
-            while(true) {
-                String message = input.readLine();
-                auctionroom_space.put(username, message);
-            }
+    public void joinAuction(String username){
 
+    }
 
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    public void createAuction(RemoteSpace space, BufferedReader userInput, String username) throws InterruptedException, IOException {
+        String userName = username;
+        System.out.println("\t Please enter item name: \n");
+        System.out.println("\t Example: 'Sort stol' \n");
+        String itemName = userInput.readLine();
+
+        System.out.println("\t Please enter item start price in DKK: \n");
+        System.out.println("\t Example: '500' \n");
+        String startPrice = userInput.readLine();
+
+        System.out.println("\t Please enter timer for the auction in minutes: \n");
+        System.out.println("\t Example: '60' \n");
+        String endTime = userInput.readLine();
+
+        System.out.println("\t Please enter item description: \n");
+        System.out.println("\t Example: 'Sort stol fra Georg Jensen. Købt i 2014. Har kvittering. Lidt skrammer men ingen større ridser' \n");
+        String description = userInput.readLine();
+
+        space.put(
+                   "create",
+                    userName,           // Username
+                    itemName,           // Item name
+                    startPrice,         // Start price
+                    endTime,            // End-time
+                    description         // Description
+        );
+
+        Object[] response = space.get(
+                new ActualField("auctionURI"),
+                new ActualField(userName),
+                new FormalField(String.class),
+                new FormalField(String.class)
+        );
+
+        System.out.println("\t Succes! Auction # " + response[2] + " created  @ " + response[3] +  "\n");
+        System.out.println("\t Would you like to join the auction? \n");
+        System.out.println("\t Yes: Type 1 \n");
+        System.out.println("\t No : Type 2 (You will be returned to lobby) \n");
+        String joinAuction = userInput.readLine();
+
+        if (joinAuction.equals("1")){
+            joinAuction(username);
         }
     }
 }
