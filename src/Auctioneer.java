@@ -1,8 +1,5 @@
 
-import org.jspace.FormalField;
-import org.jspace.SequentialSpace;
-import org.jspace.Space;
-import org.jspace.SpaceRepository;
+import org.jspace.*;
 
 public class Auctioneer implements Runnable{
     private Space           auctionLobby;
@@ -65,7 +62,7 @@ public class Auctioneer implements Runnable{
 
             // Keep reading bids and printing them
             while (true) {
-                Object[] newBid = auctionLobby.get(new FormalField(Integer.class), new FormalField(String.class));
+                Object[] newBid = auctionLobby.get(new ActualField("bid"),new FormalField(String.class), new FormalField(String.class));
                 System.out.println("Received bid from: " + newBid[1] + " @ " + newBid[0] + " DKK" );
             }
         } catch (InterruptedException e) {

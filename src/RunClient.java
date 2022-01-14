@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class RunClient {
-    public void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         Client client = new Client();
         RemoteSpace auctionatorLobby = client.connectToServer("tcp://127.0.0.1:9001/lobby?keep");
+        RemoteSpace currentAuction = null;
         BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("\t Please enter your name: \n");
+        System.out.println("## Welcome to Auctionator ##");
+        System.out.println("Please enter your name:");
         String username = inputBuffer.readLine();
         client.printCommands();
 
@@ -25,10 +27,18 @@ public class RunClient {
                 case "2": client.createAuction(auctionatorLobby, inputBuffer, username);
                     break;
 
-                case "join": client.joinAuction(username);
+                case "3":
+                    currentAuction = client.joinAuction(auctionatorLobby, inputBuffer);
+                    if(currentAuction != null) currentAuction.put(username,"online");
+                    client.startBidding(currentAuction, inputBuffer, username);
                     break;
 
-                case "exit": System.exit(0);
+                case "4": System.exit(0);
+                    break;
+
+                case "5": client.fillServerWithDummyAuctions(auctionatorLobby);
+                    break;
+
                 default:
                     throw new IllegalStateException("Unexpected value: " + userInput);
             }

@@ -90,8 +90,9 @@ public class Server {
         String auctionURI;
         String username = createRequest[1].toString();
         String auctionName = createRequest[2].toString();
-        String endTime = createRequest[5].toString();
+        String endTime = createRequest[4].toString();
         auctionURI = lobbyURI + "/auction/" + auctionCount;
+        System.out.println("New auctionCreate request received from " + username);
 
         new Thread(new Auctioneer(
                 auctionCount.toString(),        // AuctionID
@@ -104,16 +105,17 @@ public class Server {
                 endTime                         // Description
         )).start();
 
-        System.out.println("Creating auction " + auctionCount + " for " + username + " ...");
+        System.out.println("Creating auction " + auctionCount + " containing " + auctionName + " for " + username + " ...");
         System.out.println("Setting up auction space " + auctionURI + "...");
 
         /* Sending response back to the chat client */
         System.out.println("Telling " + username + " to go for auction " + auctionCount + " at " + auctionURI + "...");
+        System.out.println("");
         // Tuple for user requesting to create auction
         auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
 
         // Tuple for other users wishing to join
-        auctionatorLobby.put("auction"+auctionCount.toString(),auctionName,endTime, auctionURI);
+        auctionatorLobby.put("auction", auctionCount.toString(), auctionName, endTime, auctionURI);
         // Increment auctionCount for next create
         this.auctionCount++;
     }
