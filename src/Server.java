@@ -11,9 +11,9 @@ import java.net.UnknownHostException;
 public class Server {
     public SpaceRepository repository;
     public SequentialSpace auctionatorLobby;
-    public SequentialSpace auctions;
     public String IpV4;
     public String lobbyURI;
+    public String auctionBaseURI;
     public Integer auctionCount;
 
     // Constructor
@@ -35,6 +35,7 @@ public class Server {
 
         // Open a gate
         URI myUri = new URI(uri);
+        auctionBaseURI = "tcp://" + myUri.getHost() + ":" + myUri.getPort();
         String gateUri = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
         System.out.println("Opening repository gate at " + gateUri + "...");
         repository.addGate(gateUri);
@@ -59,7 +60,7 @@ public class Server {
         System.out.println(user + " requesting to enter " + auctionId + "...");
 
         // If auction exists prepare response with the corresponding URI
-        Object[] the_auction = auctions.queryp(new ActualField(auctionId), new FormalField(String.class));
+        Object[] the_auction = auctionatorLobby.queryp(new ActualField(auctionId), new FormalField(String.class));
         if (the_auction != null) {
             auctionURI = the_auction[1] + "?keep";
             // Sending response back to the chat client
@@ -91,7 +92,7 @@ public class Server {
         String username = createRequest[1].toString();
         String auctionName = createRequest[2].toString();
         String endTime = createRequest[4].toString();
-        auctionURI = lobbyURI + "/auction/" + auctionCount;
+        auctionURI = auctionBaseURI + "/auction" + auctionCount + "?keep";
         System.out.println("New auctionCreate request received from " + username);
 
         new Thread(new Auctioneer(

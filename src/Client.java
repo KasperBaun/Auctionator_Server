@@ -5,14 +5,20 @@ import org.jspace.RemoteSpace;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.List;
 
 public class Client  {
 
+    private String username;
+    private RemoteSpace currentAuction;
 
-    public RemoteSpace connectToServer(String uri) throws IOException {
+    public Client(String username, RemoteSpace currentAuction) {
+        this.username = username;
+        this.currentAuction = currentAuction;
+    }
+
+    public RemoteSpace connectToRemoteSpace(String uri) throws IOException {
 
         // Connect to the remote space
         System.out.println("Connecting to RemoteSpace " + uri + "...");
@@ -60,44 +66,46 @@ public class Client  {
         printCommands();
     }
 
-    public RemoteSpace joinAuction(RemoteSpace space, BufferedReader userinput) throws InterruptedException, IOException {
+    public void joinAuction(RemoteSpace space, BufferedReader userinput) throws InterruptedException, IOException {
 
         List<Object[]> auctions = space.queryAll(
                 new ActualField("auction"),
                 new FormalField(String.class),
                 new FormalField(String.class),
+                new FormalField(String.class),
                 new FormalField(String.class)
         );
+
         if (auctions.isEmpty()){
             System.out.println("No current auctions are available");
             System.out.println("Returning to lobby");
             System.out.println("\n");
             printCommands();
-            return null;
         }
 
         System.out.println("Which auction would you like to join? ");
         for (Object[] auction: auctions) {
-            System.out.println("# Auction number: " + auction[1].toString() + ":" + auction[2].toString());
+            System.out.println("# Auction number: " + auction[1].toString() + " : " + auction[2].toString() + " @ " + auction[4].toString() + " Ends in " + auction[3].toString() + " minutes");
         }
 
         System.out.println("To join type <auction number>");
         System.out.println("Example: 34");
         String auctionURI = null;
         String auctionToJoin = userinput.readLine();
-        for (Object[] auction:auctions) {
-            if (auction[1]==auctionToJoin){
-                auctionURI = auction[3].toString();
+        //System.out.println(auctionToJoin);
+        for (Object[] auction : auctions) {
+            if (auction[1].toString().equals(auctionToJoin)){
+                auctionURI = (String) auction[4];
             }
         }
         if (auctionURI == null){
-            System.out.println("Failed to connect to auction. Returning to lobby.");
+            System.out.println("Failed to connect to auction. Returning to lobby.\n");
             printCommands();
         } else {
-            System.out.println("Connected to auction #: " + auctionToJoin);
-            return connectToServer(auctionURI);
+            System.out.println("Initiating connection to auction #: " + auctionToJoin + " @ " + auctionURI);
+             currentAuction = connectToRemoteSpace(auctionURI);
+             startBidding(currentAuction,userinput);
         }
-        return null;
     }
 
     public void createAuction(RemoteSpace space, BufferedReader userInput, String username) throws InterruptedException, IOException {
@@ -139,29 +147,44 @@ public class Client  {
         printCommands();
     }
 
-    public void startBidding(RemoteSpace auction, BufferedReader input, String username) throws InterruptedException, IOException {
-        Object[] getAuction = auction.query(
-                new ActualField("auctioninfo"),
-                new FormalField(String.class),      // Auction Name
-                new FormalField(String.class)       // AuctionID
+    public void startBidding(RemoteSpace auction, BufferedReader input) throws InterruptedException, IOException {
+
+
+        currentAuction.put("hello", username);
+
+
+        Object[] helloResponse = currentAuction.get(
+                new ActualField("initialdata"),
+                new ActualField(username),      // client name
+                new FormalField(String.class),  // Auction title
+                new FormalField(String.class),  // Auction starting price
+                new FormalField(String.class),  // Current highest bid
+                new FormalField(String.class),  // Time remaining
+                new FormalField(String.class)   // Description
         );
 
-        if (getAuction != null){
-            System.out.println("Welcome to auction #: "+ getAuction[2] );
+        if (helloResponse != null){
+            System.out.println(Arrays.toString(helloResponse));
+            System.out.println("Welcome to auction #: "+ helloResponse[2] );
             System.out.println("Current highest bid is 500 from Jens");
             System.out.println("To place a bid type 'bid <amount>'");
             System.out.println("Example 'bid 550' ");
             System.out.println("Increments of minimum 10");
             System.out.println("To leave the auction type 'exit' ");
-            Boolean userActive = true;
-            while (userActive){
-                String bid = input.readLine();
-                if (bid.equals("exit")) return;
+        }
 
-                auction.put("bid", bid, username);
-            }
+        //client.startBidding(currentAuction, inputBuffer, username);
+
+
+        Boolean userActive = true;
+        while (userActive){
+            String bid = input.readLine();
+            if (bid.equals("exit")) return;
+
+            auction.put("bid", bid, username);
         }
     }
+
 
     public void fillServerWithDummyAuctions(RemoteSpace space) throws InterruptedException {
         for (int i = 0; i<10; i++){
@@ -175,5 +198,13 @@ public class Client  {
             );
         }
         printCommands();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -1,19 +1,22 @@
+import org.jspace.ActualField;
+import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class RunClient {
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        Client client = new Client();
-        RemoteSpace auctionatorLobby = client.connectToServer("tcp://127.0.0.1:9001/lobby?keep");
-        RemoteSpace currentAuction = null;
+        Client client = new Client("null",null);
+        RemoteSpace auctionatorLobby = client.connectToRemoteSpace("tcp://127.0.0.1:9001/lobby?keep");
         BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("## Welcome to Auctionator ##");
         System.out.println("Please enter your name:");
         String username = inputBuffer.readLine();
+        client.setUsername(username);
         client.printCommands();
 
         while(true){
@@ -28,9 +31,7 @@ public class RunClient {
                     break;
 
                 case "3":
-                    currentAuction = client.joinAuction(auctionatorLobby, inputBuffer);
-                    if(currentAuction != null) currentAuction.put(username,"online");
-                    client.startBidding(currentAuction, inputBuffer, username);
+                    client.joinAuction(auctionatorLobby, inputBuffer);
                     break;
 
                 case "4": System.exit(0);
