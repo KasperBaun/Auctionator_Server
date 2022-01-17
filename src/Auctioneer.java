@@ -5,17 +5,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class Auctioneer implements Runnable{
+    private SpaceRepository repository;
     private Space           auctionLobby;
     private String          auctionID;
-    private SpaceRepository repository;
     private String          auctionLobbyURI;
     private String          auctionOwner;
     private String          auctionName;
     private String          auctionStartPrice;
     private String          endTime;
     private String          auctionDescription;
-    private Integer         highestBid;
     private String          highestBidUser;
+    private Integer         highestBid;
+    private Boolean         auctionLive;
 
     // Constructor
     public Auctioneer(
@@ -40,6 +41,7 @@ public class Auctioneer implements Runnable{
         auctionLobby = new SequentialSpace();
         highestBid = 1;
         highestBidUser = "Kris";
+        auctionLive = true;
         System.out.println("Auctioneer adding lobby : " + auctionLobbyURI + " to : " + repository.isEmpty());
         this.repository.add("auction"+auctionID, auctionLobby);
     }
@@ -59,6 +61,7 @@ public class Auctioneer implements Runnable{
     }
 
     private void endAuction(){
+        auctionLive = false;
         // fjern muligheden for at bidde
         // find ud af hvem der har vundet
         // annoncér vinder i "lobby"
@@ -91,6 +94,7 @@ public class Auctioneer implements Runnable{
     }
 
     private void listenForNewBidders() throws InterruptedException {
+        System.out.println("Debug test - do we reach this");
         Object[] newBidder = auctionLobby.get(
                 new ActualField("hello"),
                 new FormalField(String.class) // Expecting username
@@ -110,7 +114,7 @@ public class Auctioneer implements Runnable{
                 username,
                 auctionName,        // Auction title
                 auctionStartPrice,  // Auction starting price
-                highestBid,         // Current highest bid
+                highestBid.toString(),         // Current highest bid
                 endTime,            // Time remaining
                 auctionDescription  // Description
         );

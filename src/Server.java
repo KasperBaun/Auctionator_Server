@@ -91,6 +91,7 @@ public class Server {
         String auctionURI;
         String username = createRequest[1].toString();
         String auctionName = createRequest[2].toString();
+        String auctionPrice = createRequest[3].toString();
         String endTime = createRequest[4].toString();
         auctionURI = auctionBaseURI + "/auction" + auctionCount + "?keep";
         System.out.println("New auctionCreate request received from " + username);
@@ -101,7 +102,7 @@ public class Server {
                 auctionURI,                     // The URI to the newly created space for the auction
                 username,                       // Username
                 auctionName,                    // Item name
-                createRequest[3].toString(),    // Start-price
+                auctionPrice,                   // Start-price
                 createRequest[4].toString(),    // End-time
                 endTime                         // Description
         )).start();
@@ -116,7 +117,7 @@ public class Server {
         auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
 
         // Tuple for other users wishing to join
-        auctionatorLobby.put("auction", auctionCount.toString(), auctionName, endTime, auctionURI);
+        auctionatorLobby.put("auction", auctionCount.toString(), auctionName, endTime, auctionPrice, auctionURI);
         // Increment auctionCount for next create
         this.auctionCount++;
     }

@@ -41,10 +41,10 @@ public class Client  {
     public void listAuctions(RemoteSpace space) throws InterruptedException {
         List<Object[]> auctions = space.queryAll(
                 new ActualField("auction"),
-                new FormalField(String.class),
-                new FormalField(String.class),
-                new FormalField(String.class),
-                new FormalField(String.class)
+                new FormalField(String.class),      // Auction ID
+                new FormalField(String.class),      // Auction title
+                new FormalField(String.class),      // Time remaining
+                new FormalField(String.class)       // Auction URI
         );
         if (auctions.isEmpty()){
             System.out.println("No current auctions are available");
