@@ -1,7 +1,5 @@
 
 import org.jspace.*;
-
-import java.util.Collections;
 import java.util.List;
 
 public class Auctioneer implements Runnable{
@@ -12,7 +10,7 @@ public class Auctioneer implements Runnable{
     private String          auctionOwner;
     private String          auctionName;
     private String          auctionStartPrice;
-    private String          endTime;
+    private String timeRemaining;
     private String          auctionDescription;
     private String          highestBidUser;
     private String          imageURL;
@@ -37,7 +35,7 @@ public class Auctioneer implements Runnable{
         this.auctionOwner = auctionOwner;
         this.auctionName = auctionName;
         this.auctionStartPrice = auctionStartPrice;
-        this.endTime = endTime;
+        this.timeRemaining = endTime;
         this.auctionDescription = auctionDescription;
         this.imageURL = imageURL;
 
@@ -97,42 +95,33 @@ public class Auctioneer implements Runnable{
     }
 
     private void listenForNewBidders() throws InterruptedException {
-        System.out.println("Debug test - do we reach this");
         Object[] newBidder = auctionLobby.get(
                 new ActualField("hello"),
                 new FormalField(String.class) // Expecting username
         );
 
         if (newBidder != null){
+            String newBidderName = newBidder[1].toString();
             // New client connected - send initial auctiondata for new clients
-            System.out.println("Auctioneer test - received newBidder connecting");
-            sendData(newBidder[1].toString());
+            System.out.println("Auctioneer @auction" + auctionID+ " received new bidder" + newBidderName + "connecting");
+            sendData(newBidderName);
         }
-
     }
 
     private void sendData(String username) throws InterruptedException {
+        System.out.println("Auctioneer @auction" + auctionID+ " sending auction data to" + username );
         auctionLobby.put(
                 "initialdata",
                 username,
-                auctionName,                     // Auction title
-                auctionStartPrice,              // Auction starting price
-                highestBid.toString(),          // Current highest bid
-                endTime,                        // Time remaining
-                auctionDescription,             // Description
+                auctionName,
+                auctionStartPrice,
+                highestBid.toString(),
+                timeRemaining,
+                auctionDescription,
                 imageURL,
                 auctionOwner
         );
     }
 
-    private void sendUpdatedHighestBid() throws InterruptedException {
-        List<Object[]> onlineBidders = auctionLobby.queryAll(
-                new ActualField("gjgjg"),
-                new FormalField(String.class),
-                new FormalField(String.class),
-                new FormalField(String.class),
-                new FormalField(String.class)
-        );
-        }
-    }
+}
 

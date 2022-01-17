@@ -2,7 +2,6 @@
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,6 +43,7 @@ public class Client  {
                 new FormalField(String.class),      // Auction ID
                 new FormalField(String.class),      // Auction title
                 new FormalField(String.class),      // Time remaining
+                new FormalField(String.class),      // Auction startprice
                 new FormalField(String.class)       // Auction URI
         );
         if (auctions.isEmpty()){
@@ -70,10 +70,11 @@ public class Client  {
 
         List<Object[]> auctions = space.queryAll(
                 new ActualField("auction"),
-                new FormalField(String.class),
-                new FormalField(String.class),
-                new FormalField(String.class),
-                new FormalField(String.class)
+                new FormalField(String.class),      // Auction ID
+                new FormalField(String.class),      // Auction title
+                new FormalField(String.class),      // Time remaining
+                new FormalField(String.class),      // Auction startprice
+                new FormalField(String.class)       // Auction URI
         );
 
         if (auctions.isEmpty()){
@@ -126,13 +127,18 @@ public class Client  {
         System.out.println("Example: 'Sort stol fra Georg Jensen. Købt i 2014. Har kvittering. Lidt skrammer men ingen større ridser' ");
         String description = userInput.readLine();
 
+        System.out.println("Please enter image URL: ");
+        System.out.println("Example: 'https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg' ");
+        String imageURL = userInput.readLine();
+
         space.put(
                    "create",
                     userName,           // Username
-                    itemName,           // Item name
-                    startPrice,         // Start price
+                    itemName,           // Auction title
+                    startPrice,         // Auction startprice
                     endTime,            // End-time
-                    description         // Description
+                    description,        // Description
+                    imageURL            // ImageURL
         );
 
         Object[] response = space.get(
@@ -149,9 +155,7 @@ public class Client  {
 
     public void startBidding(RemoteSpace auction, BufferedReader input) throws InterruptedException, IOException {
 
-
         currentAuction.put("hello", username);
-
 
         Object[] helloResponse = currentAuction.get(
                 new ActualField("initialdata"),
@@ -160,13 +164,15 @@ public class Client  {
                 new FormalField(String.class),  // Auction starting price
                 new FormalField(String.class),  // Current highest bid
                 new FormalField(String.class),  // Time remaining
-                new FormalField(String.class)   // Description
+                new FormalField(String.class),  // Description
+                new FormalField(String.class),  // Image url
+                new FormalField(String.class)   // Auction owner
         );
 
         if (helloResponse != null){
             System.out.println(Arrays.toString(helloResponse));
             System.out.println("Welcome to auction #: "+ helloResponse[2] );
-            System.out.println("Current highest bid is 500 from Jens");
+            System.out.println("Current highest bid is "+ helloResponse[4].toString() );
             System.out.println("To place a bid type 'bid <amount>'");
             System.out.println("Example 'bid 550' ");
             System.out.println("Increments of minimum 10");
@@ -174,7 +180,6 @@ public class Client  {
         }
 
         //client.startBidding(currentAuction, inputBuffer, username);
-
 
         Boolean userActive = true;
         while (userActive){
@@ -190,18 +195,15 @@ public class Client  {
         for (int i = 0; i<10; i++){
             space.put(
                     "create",
-                    "testUser1"+i,           // Username
-                    "Motorcykel"+i,           // Item name
-                    "500"+i,         // Start price
-                    "25"+i,            // End-time
-                    "Flot stand"         // Description
+                    "testUser1"+i,              // Username
+                    "Motorcykel"+i,             // Item name
+                    "500"+i,                    // Start price
+                    "25"+i,                     // End-time
+                    "Flot stand",               // Description
+                    "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
             );
         }
         printCommands();
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public void setUsername(String username) {

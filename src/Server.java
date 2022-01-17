@@ -105,8 +105,8 @@ public class Server {
                 username,                       // Username
                 auctionTitle,                   // Auction title
                 auctionPrice,                   // Auction price
-                createRequest[4].toString(),    // End-time
-                endTime,                        // Description
+                endTime,                        // End-time
+                description,                    // Description
                 imageUrl                        // Image-URL
         )).start();
 
@@ -120,7 +120,13 @@ public class Server {
         auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
 
         // Tuple for other users wishing to join
-        auctionatorLobby.put("auction", auctionCount.toString(), auctionTitle, endTime, auctionPrice, auctionURI);
+        auctionatorLobby.put("auction",
+                auctionCount.toString(),
+                auctionTitle,
+                endTime,
+                auctionPrice,
+                auctionURI);
+
         // Increment auctionCount for next create
         this.auctionCount++;
     }
