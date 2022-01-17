@@ -37,7 +37,7 @@ public class Server {
         URI myUri = new URI(uri);
         auctionBaseURI = "tcp://" + myUri.getHost() + ":" + myUri.getPort();
         String gateUri = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
-        System.out.println("Opening repository gate at " + gateUri + "...");
+        System.out.println("Opening repository gate at " + gateUri + "...\n");
         repository.addGate(gateUri);
         this.lobbyURI = gateUri;
     }
@@ -81,7 +81,7 @@ public class Server {
                 new ActualField("create"),
                 new FormalField(String.class),      // Username
                 new FormalField(String.class),      // Auction title
-                new FormalField(String.class),      // Auction price
+                new FormalField(String.class),      // Auction start-price
                 new FormalField(String.class),      // End-time
                 new FormalField(String.class),      // Description
                 new FormalField(String.class)       // Image-URL
@@ -111,21 +111,19 @@ public class Server {
         )).start();
 
         System.out.println("Creating auction " + auctionCount + " containing " + auctionTitle + " for " + username + " ...");
-        System.out.println("Setting up auction space " + auctionURI + "...");
+        System.out.println("Auction created @ " + auctionURI + "...\n");
 
-        /* Sending response back to the chat client */
-        System.out.println("Telling " + username + " to go for auction " + auctionCount + " at " + auctionURI + "...");
-        System.out.println("");
-        // Tuple for user requesting to create auction
+        /* Sending create-response back to the client */
         auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
 
-        // Tuple for other users wishing to join
+        /* Sending create-response back to the client */
         auctionatorLobby.put("auction",
                 auctionCount.toString(),
                 auctionTitle,
                 endTime,
                 auctionPrice,
-                auctionURI);
+                auctionURI
+        );
 
         // Increment auctionCount for next create
         this.auctionCount++;
@@ -143,6 +141,64 @@ public class Server {
         }
         this.IpV4 = localMachineIpV4;
         return localMachineIpV4;
+    }
+
+    public void fillServerWithDummyData() throws InterruptedException {
+        auctionatorLobby.put(
+                "create",
+                "Simon Søhår",              // Username
+                "Islandsk pony",             // Item name
+                "8999",                    // Start price
+                "420",                     // End-time
+                "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
+                "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
+        );
+
+        auctionatorLobby.put(
+                "create",
+                "Fridolski",              // Username
+                "Min farfars gamle majspibe",             // Item name
+                "650",                    // Start price
+                "300",                     // End-time
+                "En majspibe er en billig og naturlig pibe, hvor selve pibehovedet er lavet af majskolbe mens mundstykket er lavet af træ og plastik",               // Description
+                "https://cdn.shopify.com/s/files/1/0082/0445/1903/products/OriginalMissouriMeerschaumCompanyCornCobPipe.jpg?v=1622039364"
+        );
+
+        auctionatorLobby.put(
+                "create",
+                "KænguruKris",              // Username
+                "Østersmaske",             // Item name
+                "319",                    // Start price
+                "60",                     // End-time
+                "This mask is made from natural latex. It is environmentally friendly and non-toxic.\n" +
+                        "\n" +
+                        "Also, it doesn't really look like an Oyster...",               // Description
+                "http://www.weirdshityoucanbuy.com/uploads/7/0/8/8/70881739/oyster-mask_orig.jpg"
+        );
+
+        auctionatorLobby.put(
+                "create",
+                "Kasper Knæhopper",              // Username
+                "Shark Cookie Mug",             // Item name
+                "149",                    // Start price
+                "45",                     // End-time
+                "This is a handmade mug created in New Jersey studio with all lead free, eco friendly, non toxic materials- kiln fired twice to over 1900 degrees. Safe to place in the dishwasher and microwave.\n" +
+                        "\n" +
+                        "The front of the mug has a special compartment for cookies or biscuits. Those are chocolate chips pictured above. Where did they go? I will just say the shark did not eat them. Inside is a scuba diver, and the back reads LIVE EVERY WEEK LIKE IT'S SHARK WEEK.",               // Description
+                "http://www.weirdshityoucanbuy.com/uploads/7/0/8/8/70881739/shark-week-cookie-dunk-mug_orig.jpg"
+        );
+
+        auctionatorLobby.put(
+                "create",
+                "Dennis Dingo",              // Username
+                "Bog om porno for kvinder",             // Item name
+                "69",                    // Start price
+                "180",                     // End-time
+                "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
+                "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
+        );
+
+
     }
 }
 

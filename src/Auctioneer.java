@@ -1,6 +1,5 @@
 
 import org.jspace.*;
-import java.util.List;
 
 public class Auctioneer implements Runnable{
     private SpaceRepository repository;
@@ -43,7 +42,7 @@ public class Auctioneer implements Runnable{
         highestBid = 1;
         highestBidUser = "Kris";
         auctionLive = true;
-        System.out.println("Auctioneer adding lobby : " + auctionLobbyURI + " to : " + repository.isEmpty());
+        System.out.println("Auctioneer adding lobby : " + auctionLobbyURI );
         this.repository.add("auction"+auctionID, auctionLobby);
     }
 

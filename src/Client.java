@@ -135,7 +135,7 @@ public class Client  {
                    "create",
                     userName,           // Username
                     itemName,           // Auction title
-                    startPrice,         // Auction startprice
+                    startPrice,         // Auction start-price
                     endTime,            // End-time
                     description,        // Description
                     imageURL            // ImageURL

@@ -3,9 +3,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class RunServer {
-    public static void main(String[] args) throws URISyntaxException {
+    public static void main(String[] args) throws URISyntaxException, InterruptedException {
 
         Server server = new Server();
+        server.fillServerWithDummyData();
 
         Thread t0 = new Thread(new RunServer().new RunnableMessageListener(server));
         t0.start();
