@@ -79,20 +79,22 @@ public class Server {
         // Read request to create auction
         Object[] createRequest = auctionatorLobby.get(
                 new ActualField("create"),
-                new FormalField(String.class),  // Username
-                new FormalField(String.class),  // Item name
-                new FormalField(String.class), // Start price
-                //new FormalField(String.class),  // End-date
-                new FormalField(String.class),  // End-time
-                new FormalField(String.class)   // Description
+                new FormalField(String.class),      // Username
+                new FormalField(String.class),      // Auction title
+                new FormalField(String.class),      // Auction price
+                new FormalField(String.class),      // End-time
+                new FormalField(String.class),      // Description
+                new FormalField(String.class)       // Image-URL
         );
 
         // Setup new thread with Auctioneer for handling the auction
         String auctionURI;
         String username = createRequest[1].toString();
-        String auctionName = createRequest[2].toString();
+        String auctionTitle = createRequest[2].toString();
         String auctionPrice = createRequest[3].toString();
         String endTime = createRequest[4].toString();
+        String description = createRequest[5].toString();
+        String imageUrl = createRequest[6].toString();
         auctionURI = auctionBaseURI + "/auction" + auctionCount + "?keep";
         System.out.println("New auctionCreate request received from " + username);
 
@@ -101,13 +103,14 @@ public class Server {
                 repository,                     // SpaceRepository
                 auctionURI,                     // The URI to the newly created space for the auction
                 username,                       // Username
-                auctionName,                    // Item name
-                auctionPrice,                   // Start-price
+                auctionTitle,                   // Auction title
+                auctionPrice,                   // Auction price
                 createRequest[4].toString(),    // End-time
-                endTime                         // Description
+                endTime,                        // Description
+                imageUrl                        // Image-URL
         )).start();
 
-        System.out.println("Creating auction " + auctionCount + " containing " + auctionName + " for " + username + " ...");
+        System.out.println("Creating auction " + auctionCount + " containing " + auctionTitle + " for " + username + " ...");
         System.out.println("Setting up auction space " + auctionURI + "...");
 
         /* Sending response back to the chat client */
@@ -117,7 +120,7 @@ public class Server {
         auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
 
         // Tuple for other users wishing to join
-        auctionatorLobby.put("auction", auctionCount.toString(), auctionName, endTime, auctionPrice, auctionURI);
+        auctionatorLobby.put("auction", auctionCount.toString(), auctionTitle, endTime, auctionPrice, auctionURI);
         // Increment auctionCount for next create
         this.auctionCount++;
     }

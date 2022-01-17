@@ -15,6 +15,7 @@ public class Auctioneer implements Runnable{
     private String          endTime;
     private String          auctionDescription;
     private String          highestBidUser;
+    private String          imageURL;
     private Integer         highestBid;
     private Boolean         auctionLive;
 
@@ -27,7 +28,8 @@ public class Auctioneer implements Runnable{
             String auctionName,
             String auctionStartPrice,
             String endTime,
-            String auctionDescription
+            String auctionDescription,
+            String imageURL
     ){
         this.auctionID = auctionID;
         this.repository = repository;
@@ -37,6 +39,7 @@ public class Auctioneer implements Runnable{
         this.auctionStartPrice = auctionStartPrice;
         this.endTime = endTime;
         this.auctionDescription = auctionDescription;
+        this.imageURL = imageURL;
 
         auctionLobby = new SequentialSpace();
         highestBid = 1;
@@ -112,11 +115,13 @@ public class Auctioneer implements Runnable{
         auctionLobby.put(
                 "initialdata",
                 username,
-                auctionName,        // Auction title
-                auctionStartPrice,  // Auction starting price
-                highestBid.toString(),         // Current highest bid
-                endTime,            // Time remaining
-                auctionDescription  // Description
+                auctionName,                     // Auction title
+                auctionStartPrice,              // Auction starting price
+                highestBid.toString(),          // Current highest bid
+                endTime,                        // Time remaining
+                auctionDescription,             // Description
+                imageURL,
+                auctionOwner
         );
     }
 
