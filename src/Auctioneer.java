@@ -136,7 +136,7 @@ public class Auctioneer implements Runnable{
                 Object[] newBid = auctionLobby.get(new ActualField("bid"),new FormalField(String.class), new FormalField(String.class));
                 int bid = Integer.parseInt(newBid[1].toString());
                 String username = newBid[2].toString();
-                System.out.println("Auctioneer @auction " + auctionID + " Received bid from: " + username + " @ " + bid + " USD" );
+                System.out.println("Auctioneer @auction" + auctionID + " Received bid from: " + username + " @ " + bid + " USD" );
 
                 //System.out.println("Highest bid: "+highestBid);
                 //System.out.println("Bid: " +bid);
@@ -146,6 +146,7 @@ public class Auctioneer implements Runnable{
                         //Update the highest bid for all clients
                         highestBid = bid;
                         highestBidUser = username;
+                        System.out.println("Auctioneer @auction" + auctionID +  " Highest bid updated " + highestBid );
                         //System.out.println("Highest bid updated " + highestBid);
                         updateHighestBid();
                     }
@@ -199,6 +200,7 @@ public class Auctioneer implements Runnable{
                 sendData(client[1].toString());
             }
         }
+        System.out.println("Auctioneer @auction" + auctionID +  " sending updated highest bid for all clients " );
         updateOnlineBidders();
     }
 

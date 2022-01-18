@@ -148,12 +148,12 @@ public class Server {
                 "create",
                 "Simon Søhår",              // Username
                 "Islandsk pony",             // Item name
-                "8999",                    // Start price
-                "10",                     // End-time
+                "50",                       // Start price
+                "10",                       // End-time
                 "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
                 "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
         );
-
+        /*
         auctionatorLobby.put(
                 "create",
                 "Fridolski",              // Username
@@ -197,7 +197,7 @@ public class Server {
                 "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
                 "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
         );
-
+        */
 
     }
 }
