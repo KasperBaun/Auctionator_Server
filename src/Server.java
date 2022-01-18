@@ -149,7 +149,7 @@ public class Server {
                 "Simon Søhår",              // Username
                 "Islandsk pony",             // Item name
                 "8999",                    // Start price
-                "420",                     // End-time
+                "10",                     // End-time
                 "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
                 "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
         );
@@ -159,7 +159,7 @@ public class Server {
                 "Fridolski",              // Username
                 "Min farfars gamle majspibe",             // Item name
                 "650",                    // Start price
-                "300",                     // End-time
+                "10",                     // End-time
                 "En majspibe er en billig og naturlig pibe, hvor selve pibehovedet er lavet af majskolbe mens mundstykket er lavet af træ og plastik",               // Description
                 "https://cdn.shopify.com/s/files/1/0082/0445/1903/products/OriginalMissouriMeerschaumCompanyCornCobPipe.jpg?v=1622039364"
         );
@@ -169,7 +169,7 @@ public class Server {
                 "KænguruKris",              // Username
                 "Østersmaske",             // Item name
                 "319",                    // Start price
-                "60",                     // End-time
+                "10",                     // End-time
                 "This mask is made from natural latex. It is environmentally friendly and non-toxic.\n" +
                         "\n" +
                         "Also, it doesn't really look like an Oyster...",               // Description
@@ -181,7 +181,7 @@ public class Server {
                 "Kasper Knæhopper",              // Username
                 "Shark Cookie Mug",             // Item name
                 "149",                    // Start price
-                "45",                     // End-time
+                "10",                     // End-time
                 "This is a handmade mug created in New Jersey studio with all lead free, eco friendly, non toxic materials- kiln fired twice to over 1900 degrees. Safe to place in the dishwasher and microwave.\n" +
                         "\n" +
                         "The front of the mug has a special compartment for cookies or biscuits. Those are chocolate chips pictured above. Where did they go? I will just say the shark did not eat them. Inside is a scuba diver, and the back reads LIVE EVERY WEEK LIKE IT'S SHARK WEEK.",               // Description
@@ -193,7 +193,7 @@ public class Server {
                 "Dennis Dingo",              // Username
                 "Bog om porno for kvinder",             // Item name
                 "69",                    // Start price
-                "180",                     // End-time
+                "10",                     // End-time
                 "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
                 "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
         );
