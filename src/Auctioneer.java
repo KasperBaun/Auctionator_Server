@@ -1,8 +1,10 @@
 
 import org.jspace.*;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -105,12 +107,15 @@ public class Auctioneer implements Runnable{
     }
 
     private void handleDateTime(){
-        Date date = new Date();
-        Timestamp ts = new Timestamp(date.setTime(date.getTime()+timeRemaining));
+        Calendar initialDate = Calendar.getInstance(); // Current DateTime
+        initialDate.setTimeZone(TimeZone.getTimeZone("GMT+1")); // Set TimeZone
+        long timeInSecs = initialDate.getTimeInMillis(); // Convert to seconds
+        Date EndTime = new Date(timeInSecs + (timeRemaining * 1000)); // Set new Date Time + timeRemaining
+
+        Timestamp ts = new Timestamp(EndTime.getTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+1"));
         timeStamp = formatter.format(ts);
-        System.out.println(timeStamp);
+        System.out.println("End of Auction: " + timeStamp);
     }
 
     private void updateOnlineclients(){
