@@ -1,7 +1,6 @@
 
 import org.jspace.*;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,7 +47,7 @@ public class Auctioneer implements Runnable{
         this.auctionOwner = auctionOwner;
         this.auctionName = auctionName;
         this.auctionStartPrice = auctionStartPrice;
-        this.timeRemaining = Integer.parseInt(timeRemaining)*10;
+        this.timeRemaining = Integer.parseInt(timeRemaining)*60;
         this.auctionDescription = auctionDescription;
         this.imageURL = imageURL;
 
