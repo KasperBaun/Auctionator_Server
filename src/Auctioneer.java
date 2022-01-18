@@ -78,10 +78,6 @@ public class Auctioneer implements Runnable{
     }
 
     private void startAuction(){
-        countdown();
-    }
-
-    private void countdown(){
         final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         final Runnable runnable = new Runnable() {
@@ -121,7 +117,7 @@ public class Auctioneer implements Runnable{
         System.out.println("End of Auction: " + timeStamp);
     }
 
-    private void updateOnlineclients() throws InterruptedException {
+    private void updateOnlineBidders() throws InterruptedException {
         // Get list of online-clients
         List<Object[]> clientList = auctionLobby.queryAll(
                 new ActualField("online"),
@@ -149,6 +145,7 @@ public class Auctioneer implements Runnable{
                     if (bid > Integer.parseInt(auctionStartPrice) && bid > highestBid){
                         //Update the highest bid for all clients
                         highestBid = bid;
+                        highestBidUser = username;
                         //System.out.println("Highest bid updated " + highestBid);
                         updateHighestBid();
                     }
@@ -202,7 +199,7 @@ public class Auctioneer implements Runnable{
                 sendData(client[1].toString());
             }
         }
-        updateOnlineclients();
+        updateOnlineBidders();
     }
 
     private static class RunnableAuctioneerBidListener implements Runnable {
