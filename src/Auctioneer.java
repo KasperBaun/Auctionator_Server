@@ -1,7 +1,11 @@
 
 import org.jspace.*;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -21,6 +25,7 @@ public class Auctioneer implements Runnable{
     private Integer         highestBid;
     private Integer         timeRemaining;
     private Boolean         auctionIsLive;
+    private String          timeStamp;
 
     // Constructor
     public Auctioneer(
@@ -44,6 +49,7 @@ public class Auctioneer implements Runnable{
         this.auctionDescription = auctionDescription;
         this.imageURL = imageURL;
 
+        handleDateTime();
         auctionIsLive = true;
         auctionLobby = new SequentialSpace();
         highestBid = 0;
@@ -80,7 +86,7 @@ public class Auctioneer implements Runnable{
 
             public void run() {
 
-                System.out.println(auctionName + timeRemaining);
+                //System.out.println(auctionName + timeRemaining);
                 timeRemaining--;
 
                 if (timeRemaining < 0) {
@@ -98,14 +104,27 @@ public class Auctioneer implements Runnable{
         // lukke auktionen (fjerne spaces osv) - brugeren skal have besked om at de har vundet, pris, forsendelse/afhentning bla bla
     }
 
+    private void handleDateTime(){
+        Date date = new Date();
+        Timestamp ts = new Timestamp(date.setTime(date.getTime()+timeRemaining));
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+        timeStamp = formatter.format(ts);
+        System.out.println(timeStamp);
+    }
+
+    private void updateOnlineclients(){
+
+    }
+
     private void listenForBids(){
         try {
 
             // Keep reading bids and printing them
             while (auctionIsLive) {
                 Object[] newBid = auctionLobby.get(new ActualField("bid"),new FormalField(String.class), new FormalField(String.class));
-                String username = newBid[1].toString();
-                int bid = (Integer)newBid[2];
+                int bid = (Integer)newBid[1];
+                String username = newBid[2].toString();
                 System.out.println("Auctioneer @auction " + auctionID + "Received bid from: " + username + " @ " + bid + " USD" );
 
 
