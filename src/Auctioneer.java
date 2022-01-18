@@ -138,9 +138,9 @@ public class Auctioneer implements Runnable{
             // Keep reading bids and printing them
             while (auctionIsLive) {
                 Object[] newBid = auctionLobby.get(new ActualField("bid"),new FormalField(String.class), new FormalField(String.class));
-                int bid = (Integer)newBid[1];
+                int bid = Integer.parseInt(newBid[1].toString());
                 String username = newBid[2].toString();
-                System.out.println("Auctioneer @auction " + auctionID + "Received bid from: " + username + " @ " + bid + " USD" );
+                System.out.println("Auctioneer @auction " + auctionID + " Received bid from: " + username + " @ " + bid + " USD" );
 
 
                 // Received new bid - tuple with new bid looks like this : tuple("bid", "500", "user")
