@@ -142,18 +142,18 @@ public class Auctioneer implements Runnable{
                 String username = newBid[2].toString();
                 System.out.println("Auctioneer @auction " + auctionID + " Received bid from: " + username + " @ " + bid + " USD" );
 
-
+                //System.out.println("Highest bid: "+highestBid);
+                //System.out.println("Bid: " +bid);
                 // Received new bid - tuple with new bid looks like this : tuple("bid", "500", "user")
-                if (bid != 0){
                     // Check if bid > highestBid
-                    if (bid>highestBid){
-                        //Update highest bid for all clients
+                    if (bid > Integer.parseInt(auctionStartPrice) && bid > highestBid){
+                        //Update the highest bid for all clients
                         highestBid = bid;
+                        //System.out.println("Highest bid updated " + highestBid);
                         updateHighestBid();
                     }
-                }
             }
-            System.out.println("Auctioneer @auction " + auctionID + "is closing the auction" );
+            //System.out.println("Auctioneer @auction " + auctionID + "is closing the auction" );
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -199,7 +199,7 @@ public class Auctioneer implements Runnable{
         // Send new data for each online client
         if (onlineClients != null){
             for (Object[] client : onlineClients) {
-                auctionLobby.put("highestbid", client[1],highestBid.toString());
+                sendData(client[1].toString());
             }
         }
         updateOnlineclients();
