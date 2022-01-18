@@ -41,15 +41,7 @@ public class Server {
         repository.addGate(gateUri);
         this.lobbyURI = gateUri;
     }
-
-    public void readMessage() throws InterruptedException {
-
-        // Read request to enter auction
-        Object[] request = this.auctionatorLobby.get(new FormalField(String.class), new FormalField(String.class));
-        System.out.println(request[0].toString() + request[1].toString());
-
-    }
-
+    /*
     public void listenForRequestToJoinAuction() throws InterruptedException {
         String auctionURI;
 
@@ -73,7 +65,7 @@ public class Server {
             System.out.println("Telling " + user + " the requested auction " + auctionId + " does not exist");
             auctionatorLobby.put("roomURI", user, 0, "null");
         }
-    }
+    } */
 
     public void listenForRequestToCreateAuction () throws InterruptedException {
         // Read request to create auction
@@ -88,20 +80,19 @@ public class Server {
         );
 
         // Setup new thread with Auctioneer for handling the auction
-        String auctionURI;
         String username = createRequest[1].toString();
         String auctionTitle = createRequest[2].toString();
         String auctionPrice = createRequest[3].toString();
         String endTime = createRequest[4].toString();
         String description = createRequest[5].toString();
         String imageUrl = createRequest[6].toString();
-        auctionURI = auctionBaseURI + "/auction" + auctionCount + "?keep";
+        //auctionURI = auctionBaseURI + "/auction" + auctionCount + "?keep";
         System.out.println("New auctionCreate request received from " + username);
+
 
         new Thread(new Auctioneer(
                 auctionCount.toString(),        // AuctionID
-                repository,                     // SpaceRepository
-                auctionURI,                     // The URI to the newly created space for the auction
+                auctionatorLobby,
                 username,                       // Username
                 auctionTitle,                   // Auction title
                 auctionPrice,                   // Auction price
@@ -111,19 +102,6 @@ public class Server {
         )).start();
 
         System.out.println("Creating auction " + auctionCount + " containing " + auctionTitle + " for " + username + " ...");
-        System.out.println("Auction created @ " + auctionURI + "...\n");
-
-        /* Sending create-response back to the client */
-        auctionatorLobby.put("auctionURI", username, auctionCount.toString(), auctionURI);
-
-        /* Sending create-response back to the client */
-        auctionatorLobby.put("auction",
-                auctionCount.toString(),
-                auctionTitle,
-                endTime,
-                auctionPrice,
-                auctionURI
-        );
 
         // Increment auctionCount for next create
         this.auctionCount++;
@@ -153,7 +131,7 @@ public class Server {
                 "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
                 "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
         );
-        /*
+
         auctionatorLobby.put(
                 "create",
                 "Fridolski",              // Username
@@ -197,8 +175,6 @@ public class Server {
                 "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
                 "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
         );
-        */
-
     }
 }
 

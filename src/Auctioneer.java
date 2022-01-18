@@ -13,12 +13,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Auctioneer implements Runnable{
-    private SpaceRepository repository;
     private Space           auctionLobby;
     private String          auctionID;
-    private String          auctionLobbyURI;
-    private String          auctionOwner;
-    private String          auctionName;
+    private String          auctionCreator;
+    private String          auctionTitle;
     private String          auctionStartPrice;
     private String          auctionDescription;
     private String          highestBidUser;
@@ -32,20 +30,18 @@ public class Auctioneer implements Runnable{
     // Constructor
     public Auctioneer(
             String auctionID,
-            SpaceRepository repository,
-            String auctionLobbyURI,
+            Space lobby,
             String auctionOwner,
-            String auctionName,
+            String auctionTitle,
             String auctionStartPrice,
             String timeRemaining,
             String auctionDescription,
             String imageURL
-    ){
+    ) throws InterruptedException {
+        this.auctionLobby = lobby;
         this.auctionID = auctionID;
-        this.repository = repository;
-        this.auctionLobbyURI = auctionLobbyURI;
-        this.auctionOwner = auctionOwner;
-        this.auctionName = auctionName;
+        this.auctionCreator = auctionOwner;
+        this.auctionTitle = auctionTitle;
         this.auctionStartPrice = auctionStartPrice;
         this.timeRemaining = Integer.parseInt(timeRemaining)*60;
         this.auctionDescription = auctionDescription;
@@ -53,11 +49,21 @@ public class Auctioneer implements Runnable{
 
         handleDateTime();
         auctionIsLive = true;
-        auctionLobby = new SequentialSpace();
         highestBid = 0;
         highestBidUser = "null";
-        System.out.println("Auctioneer adding auctionSpace : " + auctionLobbyURI );
-        this.repository.add("auction"+auctionID, auctionLobby);
+
+        auctionLobby.put(
+            "auction",
+            auctionID,
+            auctionTitle,
+            auctionStartPrice,
+            highestBid.toString(),
+            timeStamp,
+            auctionDescription,
+            imageURL,
+            auctionOwner
+        );
+
     }
 
     @Override
@@ -133,9 +139,9 @@ public class Auctioneer implements Runnable{
 
             // Keep reading bids and printing them
             while (auctionIsLive) {
-                Object[] newBid = auctionLobby.get(new ActualField("bid"),new FormalField(String.class), new FormalField(String.class));
-                int bid = Integer.parseInt(newBid[1].toString());
-                String username = newBid[2].toString();
+                Object[] newBid = auctionLobby.get(new ActualField("bid"),new ActualField(auctionID), new FormalField(String.class), new FormalField(String.class));
+                int bid = Integer.parseInt(newBid[2].toString());
+                String username = newBid[3].toString();
                 System.out.println("Auctioneer @auction" + auctionID + " Received bid from: " + username + " @ " + bid + " USD" );
 
                 //System.out.println("Highest bid: "+highestBid);
@@ -174,15 +180,15 @@ public class Auctioneer implements Runnable{
     private void sendData(String username) throws InterruptedException {
         System.out.println("Auctioneer @auction" + auctionID+ " sending auction data to " + username );
         auctionLobby.put(
-                "auctiondata",
+                "auction_"+auctionID,
                 username,
-                auctionName,
+                auctionTitle,
                 auctionStartPrice,
                 highestBid.toString(),
                 timeStamp,
                 auctionDescription,
                 imageURL,
-                auctionOwner
+                auctionCreator
         );
     }
 
@@ -191,13 +197,15 @@ public class Auctioneer implements Runnable{
         // Get list of online-clients
         List<Object[]> onlineClients = auctionLobby.getAll(
                 new ActualField("online"),
+                new ActualField(auctionID),
                 new FormalField(String.class)   // Username
         );
 
         // Send new data for each online client
         if (onlineClients != null){
             for (Object[] client : onlineClients) {
-                sendData(client[1].toString());
+                System.out.println(client[2].toString() + " Sender til ham ");
+                sendData(client[2].toString());
             }
         }
         System.out.println("Auctioneer @auction" + auctionID +  " sending updated highest bid for all clients " );
