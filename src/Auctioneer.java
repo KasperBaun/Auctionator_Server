@@ -24,6 +24,7 @@ public class Auctioneer implements Runnable{
     private String          auctionDescription;
     private String          highestBidUser;
     private String          imageURL;
+    private Integer         onlineClients;
     private Integer         highestBid;
     private Integer         timeRemaining;
     private Boolean         auctionIsLive;
@@ -47,7 +48,7 @@ public class Auctioneer implements Runnable{
         this.auctionOwner = auctionOwner;
         this.auctionName = auctionName;
         this.auctionStartPrice = auctionStartPrice;
-        this.timeRemaining = Integer.parseInt(timeRemaining)*60;
+        this.timeRemaining = Integer.parseInt(timeRemaining)*10;
         this.auctionDescription = auctionDescription;
         this.imageURL = imageURL;
 
@@ -102,7 +103,10 @@ public class Auctioneer implements Runnable{
 
     private void endAuction(){
         auctionIsLive = false;
-        // Announce winner
+        System.out.println("Auctioneer @auction" + auctionID + " is ending auction" );
+        System.out.println("Auctioneer @auction" + auctionID + " the winner of the auction is " + highestBidUser +  " with the winning bid of " + highestBid );
+        System.out.println("Auctioneer @auction" + auctionID + " is ending auction" );
+
         // lukke auktionen (fjerne spaces osv) - brugeren skal have besked om at de har vundet, pris, forsendelse/afhentning bla bla
     }
 
@@ -118,8 +122,15 @@ public class Auctioneer implements Runnable{
         System.out.println("End of Auction: " + timeStamp);
     }
 
-    private void updateOnlineclients(){
+    private void updateOnlineclients() throws InterruptedException {
+        // Get list of online-clients
+        List<Object[]> clientList = auctionLobby.queryAll(
+                new ActualField("online"),
+                new FormalField(String.class)   // Username
+        );
+        this.onlineClients = clientList.size();
 
+        auctionLobby.put("onlineclients",onlineClients.toString());
     }
 
     private void listenForBids(){
@@ -171,7 +182,7 @@ public class Auctioneer implements Runnable{
                 auctionName,
                 auctionStartPrice,
                 highestBid.toString(),
-                timeRemaining,
+                timeStamp,
                 auctionDescription,
                 imageURL,
                 auctionOwner
@@ -189,9 +200,10 @@ public class Auctioneer implements Runnable{
         // Send new data for each online client
         if (onlineClients != null){
             for (Object[] client : onlineClients) {
-                sendData(client[1].toString());
+                auctionLobby.put("highestbid", client[1],highestBid.toString());
             }
         }
+        updateOnlineclients();
     }
 
     private static class RunnableAuctioneerBidListener implements Runnable {

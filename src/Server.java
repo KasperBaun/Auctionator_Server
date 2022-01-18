@@ -149,7 +149,7 @@ public class Server {
                 "Simon Søhår",              // Username
                 "Islandsk pony",             // Item name
                 "8999",                    // Start price
-                "10",                     // End-time
+                "1",                     // End-time
                 "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
                 "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
         );
