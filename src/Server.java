@@ -101,7 +101,7 @@ public class Server {
                 imageUrl                        // Image-URL
         )).start();
 
-        System.out.println("Creating auction " + auctionCount + " containing " + auctionTitle + " for " + username + " ...");
+        System.out.println("Creating auction " + auctionCount + " containing " + auctionTitle + " for " + username + " ...\n");
 
         // Increment auctionCount for next create
         this.auctionCount++;

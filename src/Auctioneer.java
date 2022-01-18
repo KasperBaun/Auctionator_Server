@@ -204,7 +204,7 @@ public class Auctioneer implements Runnable{
         // Send new data for each online client
         if (onlineClients != null){
             for (Object[] client : onlineClients) {
-                System.out.println(client[2].toString() + " Sender til ham ");
+                System.out.println("Sender til USER: " + client[2].toString());
                 sendData(client[2].toString());
             }
         }

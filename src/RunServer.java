@@ -7,6 +7,8 @@ public class RunServer {
 
         Server server = new Server();
         server.fillServerWithDummyData();
-        server.listenForRequestToCreateAuction();
+        while(true){
+            server.listenForRequestToCreateAuction();
+        }
     }
 }
