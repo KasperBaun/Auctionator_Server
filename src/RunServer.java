@@ -8,9 +8,6 @@ public class RunServer {
         Server server = new Server();
         server.fillServerWithDummyData();
 
-        Thread t0 = new Thread(new RunServer().new RunnableMessageListener(server));
-        t0.start();
-
         Thread t1 = new Thread(new RunServer().new RunnableServerListener(server));
         t1.start();
 
@@ -57,22 +54,5 @@ public class RunServer {
         }
     }
 
-    private class RunnableMessageListener implements Runnable {
 
-        Server server;
-        public RunnableMessageListener(Server server) {
-            this.server = server;
-        }
-
-        public void run() {
-
-            while (true) {
-                try {
-                    server.readMessage();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 }
