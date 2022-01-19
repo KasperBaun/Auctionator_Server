@@ -2,7 +2,6 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
-
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;

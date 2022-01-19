@@ -84,20 +84,6 @@ public class Client  {
         System.out.println("Example: 34");
         String auctionID;
         auctionID = inputBuffer.readLine();
-        /*
-        Object[] auctionTuple = auctionatorLobby.query(
-                new ActualField("auction"),
-                new FormalField(String.class),      // Auction ID
-                new FormalField(String.class),      // Auction title
-                new FormalField(String.class),      // Auction start price
-                new FormalField(String.class),      // Highest bid currently
-                new FormalField(String.class),      // Timestamp
-                new FormalField(String.class),      // Description
-                new FormalField(String.class),      // Image URL
-                new FormalField(String.class)       // Auction creator
-        );
-
-         */
 
         System.out.println("Connecting to auction #: " + auctionID );
         startBidding(auctionID, inputBuffer);
@@ -134,23 +120,7 @@ public class Client  {
                     description,        // Description
                     imageURL            // ImageURL
         );
-        /*
-        Object[] newAuction = auctionatorLobby.get(
-                new ActualField("auction"),
-                new FormalField(String.class),      // Auction ID
-                new FormalField(String.class),      // Auction title
-                new FormalField(String.class),      // Auction start price
-                new FormalField(String.class),      // Highest bid currently
-                new FormalField(String.class),      // Timestamp
-                new FormalField(String.class),      // Description
-                new FormalField(String.class),      // Image URL
-                new ActualField(userName)           // Auction creator
-        );
 
-        System.out.println("Succes! Auction # " + newAuction[1] + " created  for user " + newAuction[8]);
-        System.out.println("");
-
-         */
         printCommands();
     }
 
@@ -256,10 +226,6 @@ public class Client  {
         return onlineResponse;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     private class RunnableServerListener implements Runnable {
 
         String auctionID;
@@ -273,11 +239,9 @@ public class Client  {
                 try {
                     currentAuction = getAuctionData(auctionID);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }
     }
-
-
 }
