@@ -190,6 +190,7 @@ public class Client  {
             if(connectToServer.isAlive()){
                 // Do nothing
             } else connectToServer.start();
+
             int startingPrice = Integer.parseInt(currentAuction[3].toString());
             currentHighestBid = Integer.parseInt(currentAuction[4].toString());
             System.out.println("Current highest bid is "+ currentHighestBid );

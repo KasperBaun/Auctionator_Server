@@ -1,4 +1,8 @@
-import org.jspace.*;
+import org.jspace.ActualField;
+import org.jspace.FormalField;
+import org.jspace.SequentialSpace;
+import org.jspace.SpaceRepository;
+
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,44 +26,15 @@ public class Server {
         repository.add("lobby", lobby);
         this.auctionatorLobby = lobby;
 
-        //BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-
         // Set the URI of the lobby space
-        // Default value
         String uri = "tcp://127.0.0.1:9001/?keep";
 
         // Open a gate
         URI myUri = new URI(uri);
-        String gateUri = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
-        System.out.println("Opening repository gate at " + gateUri + "...\n");
-        repository.addGate(gateUri);
-        this.lobbyURI = gateUri;
+        lobbyURI = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
+        System.out.println("Opening repository gate at " + lobbyURI + "...\n");
+        repository.addGate(lobbyURI);
     }
-    /*
-    public void listenForRequestToJoinAuction() throws InterruptedException {
-        String auctionURI;
-
-        // Read request to enter auction
-        Object[] request = auctionatorLobby.get(new ActualField("enter"), new FormalField(String.class), new FormalField(String.class));
-        String user = (String) request[1];
-        String auctionId = (String) request[2];
-        System.out.println(user + " requesting to enter " + auctionId + "...");
-
-        // If auction exists prepare response with the corresponding URI
-        Object[] the_auction = auctionatorLobby.queryp(new ActualField(auctionId), new FormalField(String.class));
-        if (the_auction != null) {
-            auctionURI = the_auction[1] + "?keep";
-            // Sending response back to the chat client
-            System.out.println("Telling " + user + " to go for auction " + auctionId + " at " + auctionURI + "...");
-            auctionatorLobby.put("roomURI", user, auctionId, auctionURI);
-        }
-        // If the auction does not exist
-        else {
-            // Sending response back to the chat client with URI = null
-            System.out.println("Telling " + user + " the requested auction " + auctionId + " does not exist");
-            auctionatorLobby.put("roomURI", user, 0, "null");
-        }
-    } */
 
     public void listenForRequestToCreateAuction () throws InterruptedException {
         // Read request to create auction
@@ -80,9 +55,7 @@ public class Server {
         String endTime = createRequest[4].toString();
         String description = createRequest[5].toString();
         String imageUrl = createRequest[6].toString();
-        //auctionURI = auctionBaseURI + "/auction" + auctionCount + "?keep";
         System.out.println("New auctionCreate request received from " + username);
-
 
         new Thread(new Auctioneer(
                 auctionCount.toString(),        // AuctionID
@@ -141,7 +114,7 @@ public class Server {
                 "KænguruKris",              // Username
                 "Østersmaske",             // Item name
                 "319",                    // Start price
-                "38",                     // End-time
+                "10",                     // End-time
                 "This mask is made from natural latex. It is environmentally friendly and non-toxic.\n" +
                         "\n" +
                         "Also, it doesn't really look like an Oyster...",               // Description
@@ -153,7 +126,7 @@ public class Server {
                 "Kasper Knæhopper",              // Username
                 "Shark Cookie Mug",             // Item name
                 "149",                    // Start price
-                "30",                     // End-time
+                "10",                     // End-time
                 "This is a handmade mug created in New Jersey studio with all lead free, eco friendly, non toxic materials- kiln fired twice to over 1900 degrees. Safe to place in the dishwasher and microwave.\n" +
                         "\n" +
                         "The front of the mug has a special compartment for cookies or biscuits. Those are chocolate chips pictured above. Where did they go? I will just say the shark did not eat them. Inside is a scuba diver, and the back reads LIVE EVERY WEEK LIKE IT'S SHARK WEEK.",               // Description
@@ -165,7 +138,7 @@ public class Server {
                 "Dennis Dingo",              // Username
                 "Bog om porno for kvinder",             // Item name
                 "69",                    // Start price
-                "25",                     // End-time
+                "10",                     // End-time
                 "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
                 "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
         );
