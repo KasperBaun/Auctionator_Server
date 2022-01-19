@@ -1,8 +1,4 @@
 import org.jspace.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +9,6 @@ public class Server {
     public SequentialSpace auctionatorLobby;
     public String IpV4;
     public String lobbyURI;
-    public String auctionBaseURI;
     public Integer auctionCount;
 
     // Constructor
@@ -35,7 +30,6 @@ public class Server {
 
         // Open a gate
         URI myUri = new URI(uri);
-        auctionBaseURI = "tcp://" + myUri.getHost() + ":" + myUri.getPort();
         String gateUri = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
         System.out.println("Opening repository gate at " + gateUri + "...\n");
         repository.addGate(gateUri);
@@ -127,7 +121,7 @@ public class Server {
                 "Simon Søhår",              // Username
                 "Islandsk pony",             // Item name
                 "50",                       // Start price
-                "10",                       // End-time
+                "1",                       // End-time
                 "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
                 "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
         );
@@ -147,7 +141,7 @@ public class Server {
                 "KænguruKris",              // Username
                 "Østersmaske",             // Item name
                 "319",                    // Start price
-                "10",                     // End-time
+                "38",                     // End-time
                 "This mask is made from natural latex. It is environmentally friendly and non-toxic.\n" +
                         "\n" +
                         "Also, it doesn't really look like an Oyster...",               // Description
@@ -159,7 +153,7 @@ public class Server {
                 "Kasper Knæhopper",              // Username
                 "Shark Cookie Mug",             // Item name
                 "149",                    // Start price
-                "10",                     // End-time
+                "30",                     // End-time
                 "This is a handmade mug created in New Jersey studio with all lead free, eco friendly, non toxic materials- kiln fired twice to over 1900 degrees. Safe to place in the dishwasher and microwave.\n" +
                         "\n" +
                         "The front of the mug has a special compartment for cookies or biscuits. Those are chocolate chips pictured above. Where did they go? I will just say the shark did not eat them. Inside is a scuba diver, and the back reads LIVE EVERY WEEK LIKE IT'S SHARK WEEK.",               // Description
@@ -171,7 +165,7 @@ public class Server {
                 "Dennis Dingo",              // Username
                 "Bog om porno for kvinder",             // Item name
                 "69",                    // Start price
-                "10",                     // End-time
+                "25",                     // End-time
                 "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
                 "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
         );

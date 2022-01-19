@@ -52,34 +52,30 @@ public class Auctioneer implements Runnable{
         highestBid = 0;
         highestBidUser = "null";
 
-        auctionLobby.put(
-            "auction",
-            auctionID,
-            auctionTitle,
-            auctionStartPrice,
-            highestBid.toString(),
-            timeStamp,
-            auctionDescription,
-            imageURL,
-            auctionOwner
-        );
+        putAuctionInfoInLobby();
 
     }
 
     @Override
     public void run() {
 
-        // Start auction counter
-        Thread t0 = new Thread(new RunnableAuctioneerAuctionCounter(this));
-        t0.start();
+            // Start auction counter
+            Thread t0 = new Thread(new RunnableAuctioneerAuctionCounter(this));
+            t0.start();
 
-        // Listen for new clients
-        Thread t1 = new Thread(new RunnableAuctioneerClientListener(this));
-        t1.start();
+            // Listen for new clients
+            Thread t1 = new Thread(new RunnableAuctioneerClientListener(this));
+            t1.start();
 
-        // Listen for new bids
-        Thread t2 = new Thread(new RunnableAuctioneerBidListener(this));
-        t2.start();
+            // Listen for new bids
+            Thread t2 = new Thread(new RunnableAuctioneerBidListener(this));
+            t2.start();
+
+            if (!auctionIsLive){
+                t0.stop();
+                t1.stop();
+                t2.stop();
+            }
 
     }
 
@@ -93,8 +89,12 @@ public class Auctioneer implements Runnable{
                 //System.out.println(auctionName + timeRemaining);
                 timeRemaining--;
 
-                if (timeRemaining < 0) {
-                    endAuction();
+                if (timeRemaining <= 0) {
+                    try {
+                        endAuction();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     scheduler.shutdown();
                 }
             }
@@ -102,11 +102,12 @@ public class Auctioneer implements Runnable{
         scheduler.scheduleAtFixedRate(runnable, 0, 1, SECONDS);
     }
 
-    private void endAuction(){
+    private void endAuction() throws InterruptedException {
         auctionIsLive = false;
         System.out.println("Auctioneer @auction" + auctionID + " is ending auction" );
         System.out.println("Auctioneer @auction" + auctionID + " the winner of the auction is " + highestBidUser +  " with the winning bid of " + highestBid );
         System.out.println("Auctioneer @auction" + auctionID + " is ending auction" );
+        consumeAuctionInfoInLobby();
 
         // lukke auktionen (fjerne spaces osv) - brugeren skal have besked om at de har vundet, pris, forsendelse/afhentning bla bla
     }
@@ -127,6 +128,7 @@ public class Auctioneer implements Runnable{
         // Get list of online-clients
         List<Object[]> clientList = auctionLobby.queryAll(
                 new ActualField("online"),
+                new ActualField(auctionID),
                 new FormalField(String.class)   // Username
         );
         this.onlineClients = clientList.size();
@@ -139,10 +141,15 @@ public class Auctioneer implements Runnable{
 
             // Keep reading bids and printing them
             while (auctionIsLive) {
-                Object[] newBid = auctionLobby.get(new ActualField("bid"),new ActualField(auctionID), new FormalField(String.class), new FormalField(String.class));
+                Object[] newBid = auctionLobby.get(
+                        new ActualField("bid"),
+                        new ActualField(auctionID),     // Auction ID
+                        new FormalField(String.class),  // Bid
+                        new FormalField(String.class)   // Username
+                );
                 int bid = Integer.parseInt(newBid[2].toString());
                 String username = newBid[3].toString();
-                System.out.println("Auctioneer @auction" + auctionID + " Received bid from: " + username + " @ " + bid + " USD" );
+                System.out.println("Auctioneer @auction" + auctionID + " Received bid "+ bid +" from: " + username);
 
                 //System.out.println("Highest bid: "+highestBid);
                 //System.out.println("Bid: " +bid);
@@ -166,11 +173,12 @@ public class Auctioneer implements Runnable{
     private void listenForNewBidders() throws InterruptedException {
         Object[] newBidder = auctionLobby.get(
                 new ActualField("hello"),
+                new ActualField(auctionID),
                 new FormalField(String.class) // Expecting username
         );
 
         if (newBidder != null){
-            String newBidderName = newBidder[1].toString();
+            String newBidderName = newBidder[2].toString();
             // New client connected - send initial auctiondata for new clients
             System.out.println("Auctioneer @auction" + auctionID+ " received new bidder " + newBidderName + " connecting");
             sendData(newBidderName);
@@ -193,6 +201,8 @@ public class Auctioneer implements Runnable{
     }
 
     private void updateHighestBid() throws InterruptedException {
+        consumeAuctionInfoInLobby();
+        putAuctionInfoInLobby();
 
         // Get list of online-clients
         List<Object[]> onlineClients = auctionLobby.getAll(
@@ -210,6 +220,34 @@ public class Auctioneer implements Runnable{
         }
         System.out.println("Auctioneer @auction" + auctionID +  " sending updated highest bid for all clients " );
         updateOnlineBidders();
+    }
+
+    private void putAuctionInfoInLobby() throws InterruptedException {
+        auctionLobby.put(
+                "auction",
+                auctionID,
+                auctionTitle,
+                auctionStartPrice,
+                highestBid.toString(),
+                timeStamp,
+                auctionDescription,
+                imageURL,
+                auctionCreator
+        );
+    }
+
+    private void consumeAuctionInfoInLobby() throws InterruptedException {
+        Object[] xxxx = auctionLobby.get(
+                new ActualField("auction"),
+                new ActualField(auctionID),         // Auction ID
+                new FormalField(String.class),      // Auction title
+                new FormalField(String.class),      // Auction start price
+                new FormalField(String.class),      // Highest bid currently
+                new FormalField(String.class),      // Timestamp
+                new FormalField(String.class),      // Description
+                new FormalField(String.class),      // Image URL
+                new FormalField(String.class)       // Auction creator
+        );
     }
 
     private static class RunnableAuctioneerBidListener implements Runnable {

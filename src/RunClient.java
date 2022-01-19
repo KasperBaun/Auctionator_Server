@@ -10,13 +10,11 @@ import java.util.Arrays;
 public class RunClient {
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        Client client = new Client("null",null);
-        RemoteSpace auctionatorLobby = client.connectToRemoteSpace("tcp://127.0.0.1:9001/lobby?keep");
         BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("## Welcome to Auctionator ##");
         System.out.println("Please enter your name:");
         String username = inputBuffer.readLine();
-        client.setUsername(username);
+        Client client = new Client(username);
         client.printCommands();
 
         while(true){
@@ -24,20 +22,20 @@ public class RunClient {
             String userInput = inputBuffer.readLine();
 
             switch (userInput){
-                case "1": client.listAuctions(auctionatorLobby);
+                case "1":
+                    client.listAuctions();
+                    client.printCommands();
                     break;
 
-                case "2": client.createAuction(auctionatorLobby, inputBuffer, username);
+                case "2": client.createAuction(inputBuffer);
                     break;
 
-                case "3":
-                    client.joinAuction(auctionatorLobby, inputBuffer);
+                case "3": client.joinAuction(inputBuffer);
                     break;
 
-                case "4": System.exit(0);
-                    break;
-
-                case "5": client.fillServerWithDummyAuctions(auctionatorLobby);
+                case "4":
+                case "exit":
+                    System.exit(0);
                     break;
 
                 default:
@@ -46,9 +44,3 @@ public class RunClient {
         }
     }
 }
-            /*// Keep sending whatever the user types
-            System.out.println("Start bidding... (Increments of minimum 10 above highest bid)");
-            while(true) {
-                String message = input.readLine();
-                auctionroom_space.put(username, message);
-            }*/
