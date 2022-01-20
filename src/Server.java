@@ -93,53 +93,49 @@ public class Server {
                 "Simon Søhår",              // Username
                 "Islandsk pony",             // Item name
                 "50",                       // Start price
-                "1",                       // End-time
+                "5",                       // End-time
                 "Den islandske pony er efterkommer af de ponyer og heste, vikingerne havde med sig, da de bosatte sig på Island i niende og tiende århundrede. De medbragte heste var forskellige i udseende og farver, hvilket forklarer den store farvevariation i den islandske race.",               // Description
                 "https://www.lundemoellen.dk/images/kr%C3%A6sen-hest2.jpg"
         );
 
         auctionatorLobby.put(
                 "create",
-                "Fridolski",              // Username
+                "Simon Hans Christian Fridolf Van Der Mark ",              // Username
                 "Min farfars gamle majspibe",             // Item name
-                "650",                    // Start price
-                "5",                     // End-time
-                "En majspibe er en billig og naturlig pibe, hvor selve pibehovedet er lavet af majskolbe mens mundstykket er lavet af træ og plastik",               // Description
-                "https://cdn.shopify.com/s/files/1/0082/0445/1903/products/OriginalMissouriMeerschaumCompanyCornCobPipe.jpg?v=1622039364"
-        );
-
-        auctionatorLobby.put(
-                "create",
-                "KænguruKris",              // Username
-                "Østersmaske",             // Item name
-                "319",                    // Start price
+                "150",                    // Start price
                 "10",                     // End-time
-                "This mask is made from natural latex. It is environmentally friendly and non-toxic.\n" +
-                        "\n" +
-                        "Also, it doesn't really look like an Oyster...",               // Description
-                "http://www.weirdshityoucanbuy.com/uploads/7/0/8/8/70881739/oyster-mask_orig.jpg"
+                "En majspibe er en billig og naturlig pibe, hvor selve pibehovedet er lavet af majskolbe mens mundstykket er lavet af træ og plastik",               // Description
+                "https://norrebroskiosk.dk/wp-content/uploads/2018/03/majspiber-ny.jpeg"
         );
 
         auctionatorLobby.put(
                 "create",
-                "Kasper Knæhopper",              // Username
+                "Kristoffer Von Schnitzel",              // Username
+                "Sage Espresso Maskine",             // Item name
+                "2500",                    // Start price
+                "10",                     // End-time
+                "Sælger min gamle sage espressomaskine, den virker fint og der medfølger en god pose kaffebønner ved hurtig handel",               // Description
+                "https://royaldesign.se/image/1/sage-barista-pro-espressomaskin-1?w=168&quality=80"
+        );
+
+        auctionatorLobby.put(
+                "create",
+                "Kasper Kristian Kristoffer Van Der Ocean",              // Username
                 "Shark Cookie Mug",             // Item name
                 "149",                    // Start price
                 "15",                     // End-time
-                "This is a handmade mug created in New Jersey studio with all lead free, eco friendly, non toxic materials- kiln fired twice to over 1900 degrees. Safe to place in the dishwasher and microwave.\n" +
-                        "\n" +
-                        "The front of the mug has a special compartment for cookies or biscuits. Those are chocolate chips pictured above. Where did they go? I will just say the shark did not eat them. Inside is a scuba diver, and the back reads LIVE EVERY WEEK LIKE IT'S SHARK WEEK.",               // Description
+                "Fantastisk krus jeg købte på en charterferie i florida. Kaffe og kager lige ved hånden - what's not to like?",               // Description
                 "http://www.weirdshityoucanbuy.com/uploads/7/0/8/8/70881739/shark-week-cookie-dunk-mug_orig.jpg"
         );
 
         auctionatorLobby.put(
                 "create",
                 "Dennis Dingo",              // Username
-                "Bog om porno for kvinder",             // Item name
-                "69",                    // Start price
+                "Mit Kæle-egern Niels",             // Item name
+                "85",                    // Start price
                 "20",                     // End-time
-                "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
-                "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
+                "Sælger mit kæle-egern Niels da jeg skal flytte til Australien. Han er blød, sød og selskabelig, dog kan han godt finde på  at bide hvis du glemmer at give ham nødder.",               // Description
+                "https://styles.redditmedia.com/t5_3qzv06/styles/profileIcon_7zhvolvs8wq71.jpg?width=256&height=256&crop=256:256,smart&s=627e2372839bcbdf48a7dc00511202ae2e47001e"
         );
     }
 }
