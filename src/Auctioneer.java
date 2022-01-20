@@ -1,7 +1,6 @@
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,8 +25,8 @@ public class Auctioneer implements Runnable{
     private Integer         highestBid;
     private Integer         timeRemaining;
     private String          timeStamp;
-    private Thread          thread1;
-    private Thread          thread2;
+    private Thread          bidListenerThread;
+    private Thread          clientListenerThread;
 
     // Constructor
     public Auctioneer(
@@ -49,8 +48,8 @@ public class Auctioneer implements Runnable{
         this.timeRemaining = Integer.parseInt(timeRemaining)*60;
         this.auctionDescription = auctionDescription;
         this.imageURL = imageURL;
-        thread1 = new Thread(new RunnableAuctioneerBidListener(this));
-        thread2 = new Thread(new RunnableAuctioneerClientListener(this));
+        bidListenerThread = new Thread(new RunnableAuctioneerBidListener(this));
+        clientListenerThread = new Thread(new RunnableAuctioneerClientListener(this));
         handleDateTime();
         highestBid = 0;
         highestBidUser = "null";
@@ -60,8 +59,8 @@ public class Auctioneer implements Runnable{
     @Override
     public void run() {
         startAuction();
-        thread1.start();
-        thread2.start();
+        bidListenerThread.start();
+        clientListenerThread.start();
     }
 
     private void startAuction(){
@@ -95,34 +94,14 @@ public class Auctioneer implements Runnable{
             System.out.println("Auctioneer @auction" + auctionID + " the winner of the auction is " + highestBidUser +  " with the winning bid of " + highestBid );
         }
 
+        // Consume all tokens
         consumeAuctionInfoInLobby();
-        // Consume all tokens
-        List<Object[]> xxxx = auctionLobby.getAll(
-                new ActualField("auction"),
-                new ActualField(auctionID),         // Auction ID
-                new FormalField(String.class),      // Auction title
-                new FormalField(String.class),      // Auction start price
-                new FormalField(String.class),      // Highest bid currently
-                new FormalField(String.class),      // Timestamp
-                new FormalField(String.class),      // Description
-                new FormalField(String.class),      // Image URL
-                new FormalField(String.class)       // Auction creator
-        );
-        // Consume all tokens
-        List<Object[]> xxsomethingxxx = auctionLobby.getAll(
-                new ActualField("auction_"+auctionID),
-                new FormalField(String.class),  // client name
-                new FormalField(String.class),  // Auction title
-                new FormalField(String.class),  // Auction starting price
-                new FormalField(String.class),  // Current highest bid
-                new FormalField(String.class),  // Timestamp
-                new FormalField(String.class),  // Description
-                new FormalField(String.class),  // Image url
-                new FormalField(String.class)   // Auction owner
-        );
+
+        // Consume all specific user tokens
+        consumeSpecificAuctionInfoInLobby();
         // Close threads
-        thread1.interrupt();
-        thread2.interrupt();
+        bidListenerThread.interrupt();
+        clientListenerThread.interrupt();
     }
 
     private void handleDateTime(){
@@ -212,16 +191,18 @@ public class Auctioneer implements Runnable{
         putAuctionInfoInLobby();
 
         // Get list of online-clients
-        List<Object[]> onlineClients = auctionLobby.getAll(
+        List<Object[]> onlineClients = auctionLobby.queryAll(
                 new ActualField("online"),
                 new ActualField(auctionID),
                 new FormalField(String.class)   // Username
         );
 
+        consumeSpecificAuctionInfoInLobby();
+
         // Send new data for each online client
         if (onlineClients != null){
             for (Object[] client : onlineClients) {
-                System.out.println("Sender til USER: " + client[2].toString());
+                //System.out.println("Sender til USER: " + client[2].toString());
                 sendData(client[2].toString());
             }
         }
@@ -244,7 +225,7 @@ public class Auctioneer implements Runnable{
     }
 
     private void consumeAuctionInfoInLobby() throws InterruptedException {
-        Object[] xxxx = auctionLobby.get(
+        List<Object[]> xxxx = auctionLobby.getAll(
                 new ActualField("auction"),
                 new ActualField(auctionID),         // Auction ID
                 new FormalField(String.class),      // Auction title
@@ -254,6 +235,20 @@ public class Auctioneer implements Runnable{
                 new FormalField(String.class),      // Description
                 new FormalField(String.class),      // Image URL
                 new FormalField(String.class)       // Auction creator
+        );
+    }
+
+    private void consumeSpecificAuctionInfoInLobby() throws InterruptedException {
+        List<Object[]> xxsomethingxxx = auctionLobby.getAll(
+                new ActualField("auction_"+auctionID),
+                new FormalField(String.class),  // client name
+                new FormalField(String.class),  // Auction title
+                new FormalField(String.class),  // Auction starting price
+                new FormalField(String.class),  // Current highest bid
+                new FormalField(String.class),  // Timestamp
+                new FormalField(String.class),  // Description
+                new FormalField(String.class),  // Image url
+                new FormalField(String.class)   // Auction owner
         );
     }
 
@@ -285,6 +280,7 @@ public class Auctioneer implements Runnable{
         public void run() {
             while(true) {
                 try {
+                    //auctioneer.updateOnlineBidders();
                     auctioneer.listenForNewBidders();
 
                 } catch (InterruptedException e) {

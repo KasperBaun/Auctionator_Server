@@ -103,7 +103,7 @@ public class Server {
                 "Fridolski",              // Username
                 "Min farfars gamle majspibe",             // Item name
                 "650",                    // Start price
-                "10",                     // End-time
+                "5",                     // End-time
                 "En majspibe er en billig og naturlig pibe, hvor selve pibehovedet er lavet af majskolbe mens mundstykket er lavet af træ og plastik",               // Description
                 "https://cdn.shopify.com/s/files/1/0082/0445/1903/products/OriginalMissouriMeerschaumCompanyCornCobPipe.jpg?v=1622039364"
         );
@@ -125,7 +125,7 @@ public class Server {
                 "Kasper Knæhopper",              // Username
                 "Shark Cookie Mug",             // Item name
                 "149",                    // Start price
-                "10",                     // End-time
+                "15",                     // End-time
                 "This is a handmade mug created in New Jersey studio with all lead free, eco friendly, non toxic materials- kiln fired twice to over 1900 degrees. Safe to place in the dishwasher and microwave.\n" +
                         "\n" +
                         "The front of the mug has a special compartment for cookies or biscuits. Those are chocolate chips pictured above. Where did they go? I will just say the shark did not eat them. Inside is a scuba diver, and the back reads LIVE EVERY WEEK LIKE IT'S SHARK WEEK.",               // Description
@@ -137,7 +137,7 @@ public class Server {
                 "Dennis Dingo",              // Username
                 "Bog om porno for kvinder",             // Item name
                 "69",                    // Start price
-                "10",                     // End-time
+                "20",                     // End-time
                 "Glem nøgenbilleder! Det her er virkelig sexet! Mænd, der laver mad, lytter til hvert et ord, gør rent i huset, spørger om vej og flere fantasier.",               // Description
                 "https://cdn.shopify.com/s/files/1/0072/1432/products/hachette-chronicle-books-books-porn-for-women-gag-book-funny-gag-gifts-30385002971297_1800x1800.jpg?v=1628416905"
         );
