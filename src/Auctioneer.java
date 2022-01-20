@@ -87,12 +87,14 @@ public class Auctioneer implements Runnable{
     }
 
     private void endAuction() throws InterruptedException {
-        System.out.println("Auctioneer @auction" + auctionID + " is closing the auction" );
+
         if (highestBidUser.equals("null") && highestBid ==0){
             System.out.println("Auctioneer @auction" + auctionID + " no bidders has placed a bid on this auction " );
         } else {
             System.out.println("Auctioneer @auction" + auctionID + " the winner of the auction is " + highestBidUser +  " with the winning bid of " + highestBid );
         }
+        System.out.println("Auctioneer @auction" + auctionID + " Time is up!" );
+        System.out.println("Auctioneer @auction" + auctionID + " is closing the auction" );
 
         // Consume all tokens
         consumeAuctionInfoInLobby();
