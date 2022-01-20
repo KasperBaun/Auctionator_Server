@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 public class Server {
     public SpaceRepository repository;
     public SequentialSpace auctionatorLobby;
-    public String IpV4;
     public String lobbyURI;
     public Integer auctionCount;
 
@@ -20,7 +19,6 @@ public class Server {
         auctionCount = 0;
         SpaceRepository repository = new SpaceRepository();
         this.repository = repository;
-
         SequentialSpace lobby = new SequentialSpace();
         repository.add("lobby", lobby);
         this.auctionatorLobby = lobby;
@@ -71,20 +69,6 @@ public class Server {
 
         // Increment auctionCount for next create
         this.auctionCount++;
-    }
-
-    public String getLocalMachineIPv4(){
-        String localMachineIpV4;
-        String port = "9001";
-        try {
-            localMachineIpV4 = "tcp://" + InetAddress.getLocalHost().getHostAddress() + ":" + port;
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            // If it fails set variable to localhost
-            localMachineIpV4 = "tcp://127.0.0.1:" + port;
-        }
-        this.IpV4 = localMachineIpV4;
-        return localMachineIpV4;
     }
 
     public void fillServerWithDummyData() throws InterruptedException {

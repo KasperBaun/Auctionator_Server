@@ -9,24 +9,23 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Auctioneer implements Runnable{
-    private Space           auctionLobby;
-    private String          auctionID;
-    private String          auctionCreator;
-    private String          auctionTitle;
-    private String          auctionStartPrice;
-    private String          auctionDescription;
+    private final Space           auctionLobby;
+    private final String          auctionID;
+    private final String          auctionCreator;
+    private final String          auctionTitle;
+    private final String          auctionStartPrice;
+    private final String          auctionDescription;
     private String          highestBidUser;
-    private String          imageURL;
+    private final String          imageURL;
     private Integer         onlineClients;
     private Integer         highestBid;
     private Integer         timeRemaining;
     private String          timeStamp;
-    private Thread          bidListenerThread;
-    private Thread          clientListenerThread;
+    private final Thread          bidListenerThread;
+    private final Thread          clientListenerThread;
 
     // Constructor
     public Auctioneer(
@@ -65,12 +64,8 @@ public class Auctioneer implements Runnable{
 
     private void startAuction(){
         final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
         final Runnable runnable = new Runnable() {
-
             public void run() {
-
-                //System.out.println(auctionName + timeRemaining);
                 timeRemaining--;
 
                 if (timeRemaining <= 0) {
@@ -107,10 +102,10 @@ public class Auctioneer implements Runnable{
     }
 
     private void handleDateTime(){
-        Calendar initialDate = Calendar.getInstance(); // Current DateTime
-        initialDate.setTimeZone(TimeZone.getTimeZone("GMT+1")); // Set TimeZone
-        long timeInSecs = initialDate.getTimeInMillis(); // Convert to seconds
-        Date EndTime = new Date(timeInSecs + (timeRemaining * 1000)); // Set new Date Time + timeRemaining
+        Calendar initialDate = Calendar.getInstance();                  // Current DateTime
+        initialDate.setTimeZone(TimeZone.getTimeZone("GMT+1"));         // Set TimeZone
+        long timeInSecs = initialDate.getTimeInMillis();                // Convert to seconds
+        Date EndTime = new Date(timeInSecs + (timeRemaining * 1000));   // Set new Date Time + timeRemaining
 
         Timestamp ts = new Timestamp(EndTime.getTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -204,7 +199,6 @@ public class Auctioneer implements Runnable{
         // Send new data for each online client
         if (onlineClients != null){
             for (Object[] client : onlineClients) {
-                //System.out.println("Sender til USER: " + client[2].toString());
                 sendData(client[2].toString());
             }
         }
@@ -227,7 +221,7 @@ public class Auctioneer implements Runnable{
     }
 
     private void consumeAuctionInfoInLobby() throws InterruptedException {
-        List<Object[]> xxxx = auctionLobby.getAll(
+        List<Object[]> cleanTokens = auctionLobby.getAll(
                 new ActualField("auction"),
                 new ActualField(auctionID),         // Auction ID
                 new FormalField(String.class),      // Auction title
@@ -241,7 +235,7 @@ public class Auctioneer implements Runnable{
     }
 
     private void consumeSpecificAuctionInfoInLobby() throws InterruptedException {
-        List<Object[]> xxsomethingxxx = auctionLobby.getAll(
+        List<Object[]> cleanTokens = auctionLobby.getAll(
                 new ActualField("auction_"+auctionID),
                 new FormalField(String.class),  // client name
                 new FormalField(String.class),  // Auction title
@@ -282,8 +276,9 @@ public class Auctioneer implements Runnable{
         public void run() {
             while(true) {
                 try {
-                    //auctioneer.updateOnlineBidders();
+                    auctioneer.updateOnlineBidders();
                     auctioneer.listenForNewBidders();
+                    auctioneer.updateOnlineBidders();
 
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
